@@ -5,7 +5,7 @@ exports.handler = async (event) => {
 
   const OPENROUTER_KEY = process.env.OPENROUTER_KEY;
   if (!OPENROUTER_KEY) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'API key not configured' }) };
+    return { statusCode: 500, body: JSON.stringify({ error: 'API key not configured on server' }) };
   }
 
   let body;
@@ -17,35 +17,67 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing prompt' }) };
   }
 
-  try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENROUTER_KEY}`,
-        'HTTP-Referer': 'https://iridescent-sundae-ac775b.netlify.app'
-      },
-      body: JSON.stringify({
-        model: 'openrouter/free',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 2000,
-        temperature: 0.1
-      })
-    });
+  // Lista de modelos gratuitos para tentar em sequência
+  const FREE_MODELS = [
+    'nvidia/llama-3.1-nemotron-nano-8b-v1:free',
+    'google/gemma-3-27b-it:free',
+    'google/gemma-3-12b-it:free',
+    'mistralai/mistral-7b-instruct:free',
+    'qwen/qwen3-8b:free',
+    'nousresearch/hermes-3-llama-3.1-405b:free',
+    'openchat/openchat-7b:free',
+    'gryphe/mythomax-l2-13b:free',
+  ];
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      return { statusCode: response.status, body: JSON.stringify({ error: err.error?.message || 'OpenRouter error' }) };
+  let lastError = '';
+
+  for (const model of FREE_MODELS) {
+    try {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENROUTER_KEY}`,
+          'HTTP-Referer': 'https://iridescent-sundae-ac775b.netlify.app',
+          'X-Title': 'Lista Mercado SP'
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 2000,
+          temperature: 0.1
+        })
+      });
+
+      const data = await response.json();
+
+      // Se modelo não disponível, tenta próximo
+      if (!response.ok) {
+        lastError = data.error?.message || `HTTP ${response.status}`;
+        if (response.status === 402 || response.status === 400 ||
+            (lastError && lastError.includes('unavailable for free'))) {
+          continue; // tenta próximo modelo
+        }
+        return { statusCode: response.status, body: JSON.stringify({ error: lastError }) };
+      }
+
+      const text = data.choices?.[0]?.message?.content || '';
+      if (!text) { lastError = 'empty response'; continue; }
+
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, model_used: model })
+      };
+
+    } catch(e) {
+      lastError = e.message;
+      continue;
     }
-
-    const data = await response.json();
-    const text = data.choices?.[0]?.message?.content || '';
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
-    };
-  } catch(e) {
-    return { statusCode: 500, body: JSON.stringify({ error: e.message }) };
   }
+
+  return {
+    statusCode: 503,
+    body: JSON.stringify({ error: `Todos os modelos gratuitos falharam. Último erro: ${lastError}` })
+  };
 };
