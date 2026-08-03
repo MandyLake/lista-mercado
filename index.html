@@ -896,64 +896,107 @@ Se não conseguir extrair o preço, responda: {"price": null, "name": null}
 Somente o JSON, sem explicação.`;
 
   // Try Anthropic first (has web access), fallback to configured provider
+  // Helper: extract JSON from any text
+  const extractJSON = (raw) => {
+    if(!raw) throw new Error('empty response');
+    let clean = raw.trim().replace(/```json|```/g,'').trim();
+    const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+    if(s === -1 || e === -1) throw new Error('no JSON');
+    return JSON.parse(clean.slice(s, e+1));
+  };
+
+  // Anthropic: handles multi-turn tool_use + text blocks
   const tryAnthropic = async () => {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',max_tokens:200,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    if(!res.ok) throw new Error('anthropic failed');
-    const data=await res.json();
-    const txt=data.content?.find(b=>b.type==='text')?.text;
-    if(!txt) throw new Error('no text');
-    return txt;
+    const messages = [{role:'user', content: prompt}];
+    let iterations = 0;
+    while(iterations++ < 5) {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-6',
+          max_tokens:800,
+          tools:[{type:'web_search_20250305', name:'web_search'}],
+          messages
+        })
+      });
+      if(!res.ok) {
+        const e = await res.json().catch(()=>({}));
+        throw new Error(e.error?.message || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      // Collect all text blocks
+      const texts = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text);
+      // If there's a text block with JSON, return it
+      for(const txt of texts) {
+        try { const j = extractJSON(txt); return j; } catch(e) {}
+      }
+      // If stop_reason is tool_use, feed results back and continue
+      if(data.stop_reason === 'tool_use') {
+        const toolUses = (data.content||[]).filter(b=>b.type==='tool_use');
+        messages.push({role:'assistant', content: data.content});
+        const toolResults = toolUses.map(t=>({
+          type:'tool_result', tool_use_id:t.id,
+          content: `Searched for: ${JSON.stringify(t.input)}`
+        }));
+        messages.push({role:'user', content: toolResults});
+        continue;
+      }
+      // end_turn with text only — try last text block
+      if(texts.length > 0) return extractJSON(texts[texts.length-1]);
+      throw new Error('no usable response');
+    }
+    throw new Error('max iterations');
   };
 
   const tryConfigured = async () => {
-    if(!apiConfig.key) throw new Error('no key');
-    const provider=PROVIDERS[apiConfig.provider];
-    const res=await fetch(provider.url,{method:'POST',headers:provider.getHeaders(apiConfig.key),body:provider.buildBody(prompt)});
-    if(!res.ok) throw new Error('provider failed');
-    const data=await res.json();
-    return provider.parseResponse(data);
+    if(!apiConfig.key) throw new Error('no key configured');
+    const provider = PROVIDERS[apiConfig.provider];
+    if(!provider) throw new Error('invalid provider');
+    const res = await fetch(provider.url, {
+      method:'POST',
+      headers: provider.getHeaders(apiConfig.key),
+      body: provider.buildBody(prompt)
+    });
+    if(!res.ok) {
+      const e = await res.json().catch(()=>({}));
+      throw new Error(e.error?.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    const raw = provider.parseResponse(data);
+    return extractJSON(raw);
   };
 
   try{
-    let raw;
-    try{raw=await tryAnthropic();}
-    catch(e){raw=await tryConfigured();}
+    let parsed;
+    try { parsed = await tryAnthropic(); }
+    catch(e) {
+      console.warn('Anthropic failed:', e.message, '— trying configured provider');
+      parsed = await tryConfigured();
+    }
 
-    let clean=raw.trim().replace(/```json|```/g,'').trim();
-    const s=clean.indexOf('{'),e=clean.lastIndexOf('}');
-    if(s===-1||e===-1) throw new Error('JSON não encontrado');
-    const parsed=JSON.parse(clean.slice(s,e+1));
-
-    if(!parsed.price){
-      statusEl.textContent='Não consegui extrair o preço. Verifique o link.';
-      statusEl.className='link-status err';
+    if(!parsed?.price){
+      statusEl.textContent = 'Não consegui extrair o preço. Tente com outro link.';
+      statusEl.className = 'link-status err';
       return;
     }
 
-    const oldPrice=CATS[ci].items[ii].price;
-    CATS[ci].items[ii].price=parseFloat(parsed.price);
-    CATS[ci].items[ii].url=url;
+    const oldPrice = CATS[ci].items[ii].price;
+    CATS[ci].items[ii].price = parseFloat(parsed.price);
+    CATS[ci].items[ii].url = url;
     scheduleSave();
     render();
 
-    statusEl.textContent=`✓ Preço atualizado: R$ ${parsed.price} (era R$ ${oldPrice})${parsed.name?' — '+parsed.name:''}`;
-    statusEl.className='link-status ok';
+    statusEl.textContent = `✓ R$ ${parsed.price} (era R$ ${oldPrice})${parsed.name ? ' — '+parsed.name : ''}`;
+    statusEl.className = 'link-status ok';
+    setTimeout(()=>{ closeLinkField(); }, 2800);
 
-    setTimeout(()=>{closeLinkField();},2500);
-  }catch(err){
-    statusEl.textContent='Erro ao buscar preço. Tente novamente.';
-    statusEl.className='link-status err';
-    console.error(err);
-  }finally{
-    if(fetchBtn) fetchBtn.disabled=false;
+  } catch(err){
+    statusEl.textContent = `Erro: ${err.message}`;
+    statusEl.className = 'link-status err';
+    console.error('fetchPriceFromUrl error:', err);
+  } finally {
+    if(fetchBtn) fetchBtn.disabled = false;
   }
 }
 
