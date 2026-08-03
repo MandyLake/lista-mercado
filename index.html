@@ -404,7 +404,7 @@ const SUPABASE_KEY='sb_publishable_-xoL5wLU8oqfGn-iC9StUQ_M7xXz0Jk';
 const TABLE='lista_mercado';
 const ROW_ID='minha_lista';
 
-let apiConfig={provider:'openrouter',key:''};
+let apiConfig={provider:'openrouter',key:''}; // chave carregada do Supabase via loadFromCloud
 
 const PROVIDERS={
   openrouter:{name:'OpenRouter',url:'https://openrouter.ai/api/v1/chat/completions',
@@ -949,6 +949,23 @@ Somente o JSON, sem explicação.`;
     throw new Error('max iterations');
   };
 
+  // Use Netlify serverless proxy (key stored in env var, never exposed)
+  const tryProxy = async () => {
+    const res = await fetch('/.netlify/functions/ai-proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    if(!res.ok) {
+      const e = await res.json().catch(()=>({}));
+      throw new Error(e.error || `Proxy HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    if(!data.text) throw new Error('empty proxy response');
+    return extractJSON(data.text);
+  };
+
+  // Fallback: manually configured provider in settings
   const tryConfigured = async () => {
     if(!apiConfig.key) throw new Error('no key configured');
     const provider = PROVIDERS[apiConfig.provider];
@@ -971,8 +988,12 @@ Somente o JSON, sem explicação.`;
     let parsed;
     try { parsed = await tryAnthropic(); }
     catch(e) {
-      console.warn('Anthropic failed:', e.message, '— trying configured provider');
-      parsed = await tryConfigured();
+      console.warn('Anthropic failed:', e.message, '— trying proxy');
+      try { parsed = await tryProxy(); }
+      catch(e2) {
+        console.warn('Proxy failed:', e2.message, '— trying configured');
+        parsed = await tryConfigured();
+      }
     }
 
     if(!parsed?.price){
