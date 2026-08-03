@@ -1050,7 +1050,20 @@ async function updatePrices(){
     return {raw: textBlock.text, source: 'Anthropic + busca web'};
   };
 
-  // Fallback: provedor configurado pelo usuário
+  // Fallback 1: Netlify proxy (chave segura no servidor)
+  const tryProxy = async () => {
+    showStatus('Buscando preços via servidor…','info');
+    const res = await fetch('/.netlify/functions/ai-proxy', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({prompt})
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || `Proxy HTTP ${res.status}`);
+    if(!data.text) throw new Error('resposta vazia do proxy');
+    return {raw: data.text, source: 'OpenRouter (proxy)'};
+  };
+
+  // Fallback 2: provedor configurado manualmente
   const tryConfigured = async () => {
     if(!apiConfig.key) throw new Error('sem chave configurada');
     const provider=PROVIDERS[apiConfig.provider];
@@ -1067,7 +1080,14 @@ async function updatePrices(){
   try{
     let result;
     try { result = await tryAnthropic(); }
-    catch(e){ result = await tryConfigured(); }
+    catch(e){
+      console.warn('Anthropic failed:', e.message);
+      try { result = await tryProxy(); }
+      catch(e2){
+        console.warn('Proxy failed:', e2.message);
+        result = await tryConfigured();
+      }
+    }
 
     let clean=result.raw.trim().replace(/```json|```/g,'').trim();
     const s=clean.indexOf('{'),e=clean.lastIndexOf('}');
