@@ -131,11 +131,11 @@ nav{max-width:1000px;margin:0 auto;padding:20px 24px;display:flex;align-items:ce
 .fan-card-item-dot::before{content:'✦ ';opacity:.6}
 
 /* DRAWER (expanded list) */
-.drawer-overlay{position:fixed;inset:0;background:rgba(26,20,16,.45);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.drawer-overlay{position:fixed;inset:0;background:rgba(13,11,26,.65);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 .drawer-overlay.open{display:flex}
-.drawer{background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-width:680px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 -8px 60px rgba(0,0,0,.2);animation:slideUp .3s cubic-bezier(.34,1.1,.64,1)}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.drawer-handle{width:40px;height:4px;background:var(--ink3);border-radius:99px;margin:14px auto 0;flex-shrink:0;opacity:.4}
+.drawer{background:var(--bg);border-radius:20px;width:100%;max-width:660px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(65,0,245,.25),0 0 0 1.5px rgba(65,0,245,.18);animation:popIn .28s cubic-bezier(.34,1.2,.64,1)}
+@keyframes popIn{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.drawer-handle{display:none}
 .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1.5px solid var(--border2);flex-shrink:0}
 .drawer-header-left{display:flex;align-items:center;gap:12px}
 .drawer-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
@@ -145,7 +145,26 @@ nav{max-width:1000px;margin:0 auto;padding:20px 24px;display:flex;align-items:ce
 .drawer-close{width:32px;height:32px;border:1.5px solid var(--border);border-radius:50%;background:transparent;color:var(--ink2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;transition:background .15s}
 .drawer-close:hover{background:var(--surface2)}
 .drawer-body{overflow-y:auto;flex:1;padding-bottom:16px}
-.drawer-add{padding:10px 16px;border-top:1px solid var(--border2);background:#FAFAF8;flex-shrink:0}
+.drawer-add{padding:10px 16px;border-top:1px solid var(--border2);background:var(--surface2);flex-shrink:0;border-radius:0 0 20px 20px}
+
+/* ── LINK FIELD ── */
+.link-row{display:none;align-items:center;gap:5px;padding:6px 16px;border-bottom:1px solid var(--border2);background:#f5f3ff;flex-wrap:wrap}
+.link-row.active{display:flex}
+.link-input{flex:1;min-width:140px;font-family:var(--mono);font-size:11px;padding:5px 9px;border:1.5px solid rgba(65,0,245,.3);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none;transition:border-color .15s}
+.link-input:focus{border-color:var(--klein)}
+.link-input::placeholder{color:var(--ink3)}
+.fetch-btn{font-family:var(--sans);font-size:11px;font-weight:500;padding:5px 10px;border:none;border-radius:var(--r-sm);background:var(--klein);color:#fff;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;transition:background .1s}
+.fetch-btn:hover{background:#3300d4}
+.fetch-btn:disabled{opacity:.5;cursor:not-allowed}
+.fetch-btn svg{width:11px;height:11px}
+.link-cancel{font-family:var(--sans);font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--r-sm);background:transparent;color:var(--ink2);cursor:pointer}
+.link-status{font-family:var(--mono);font-size:10px;width:100%;padding-top:2px}
+.link-status.ok{color:var(--green)}
+.link-status.err{color:var(--tangerine)}
+.link-status.loading{color:var(--klein)}
+.link-icon-btn{width:20px;height:20px;border:none;background:transparent;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;opacity:0;transition:opacity .15s,color .1s;padding:0}
+.link-icon-btn:hover{color:var(--klein)}
+.item-row:hover .link-icon-btn{opacity:1}
 
 /* ── ITEM ROW ── */
 .item-row{display:flex;align-items:center;gap:8px;padding:9px 16px;border-bottom:1px solid var(--border2);min-height:42px;transition:background .1s}
@@ -553,6 +572,7 @@ let editingKey=null;
 let updatedItems=new Set();
 let saveTimer=null;
 let openDrawerIdx=null;
+let linkEditKey=null;
 
 function setSyncState(s,l){
   document.getElementById('sync-dot').className='sync-dot'+(s?' '+s:'');
@@ -759,10 +779,23 @@ function renderDrawerContent(ci){
           <button class="qty-btn" onclick="CATS[${ci}].items[${ii}].qty=CATS[${ci}].items[${ii}].qty+1;render();scheduleSave()">+</button>
         </div>
         <span class="item-price ${upd?'updated':''}">${item.on?fmt(sub):'—'}</span>
+        <button class="link-icon-btn" onclick="openLinkField(${ci},${ii})" title="Adicionar link de preço" aria-label="Link de preço">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </button>
         <button class="edit-btn" onclick="startEdit(${ci},${ii})" title="Editar" aria-label="Editar">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
         <button class="del-btn" onclick="CATS[${ci}].items.splice(${ii},1);render();scheduleSave()" aria-label="Remover">×</button>
+      </div>
+      <div class="link-row ${(linkEditKey===key)?'active':''}" id="link-${key}">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--klein)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <input type="url" class="link-input" id="link-url-${key}" value="${item.url||''}" placeholder="Cole o link do produto (ex: americanas.com.br/produto/...)">
+        <button class="fetch-btn" id="fetch-btn-${key}" onclick="fetchPriceFromUrl(${ci},${ii})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Buscar preço
+        </button>
+        <button class="link-cancel" onclick="closeLinkField()">✕</button>
+        <div class="link-status" id="link-status-${key}"></div>
       </div>
       <div class="edit-row ${isEditing?'active':''}" id="edit-${key}">
         <input type="text" id="edit-name-${key}" value="${item.name.replace(/"/g,'&quot;')}" placeholder="Nome">
@@ -822,6 +855,106 @@ async function saveSettings(){
   apiConfig={provider,key};
   try{await saveToCloud();statusEl.textContent='Configuração salva!';statusEl.className='modal-status ok';setTimeout(closeSettings,1000);}
   catch(e){statusEl.textContent='Erro ao salvar.';statusEl.className='modal-status err';}
+}
+
+// ── LINK PRICE FETCH ──
+function openLinkField(ci,ii){
+  linkEditKey=ci+'-'+ii;
+  editingKey=null;
+  renderDrawerContent(ci);
+  setTimeout(()=>{
+    const el=document.getElementById('link-url-'+linkEditKey);
+    if(el){el.focus();}
+  },50);
+}
+
+function closeLinkField(){
+  linkEditKey=null;
+  if(openDrawerIdx!==null) renderDrawerContent(openDrawerIdx);
+}
+
+async function fetchPriceFromUrl(ci,ii){
+  const key=ci+'-'+ii;
+  const urlInput=document.getElementById('link-url-'+key);
+  const statusEl=document.getElementById('link-status-'+key);
+  const fetchBtn=document.getElementById('fetch-btn-'+key);
+  const url=(urlInput?.value||'').trim();
+  if(!url){statusEl.textContent='Cole um link válido.';statusEl.className='link-status err';return;}
+
+  // Save URL to item
+  CATS[ci].items[ii].url=url;
+
+  fetchBtn.disabled=true;
+  statusEl.textContent='Lendo o link e extraindo o preço…';
+  statusEl.className='link-status loading';
+
+  const prompt=`Acesse este link de produto e extraia o preço atual em reais (R$).
+URL: ${url}
+
+Responda APENAS com um JSON no formato: {"price": 29.90, "name": "nome do produto"}
+Se não conseguir extrair o preço, responda: {"price": null, "name": null}
+Somente o JSON, sem explicação.`;
+
+  // Try Anthropic first (has web access), fallback to configured provider
+  const tryAnthropic = async () => {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:200,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!res.ok) throw new Error('anthropic failed');
+    const data=await res.json();
+    const txt=data.content?.find(b=>b.type==='text')?.text;
+    if(!txt) throw new Error('no text');
+    return txt;
+  };
+
+  const tryConfigured = async () => {
+    if(!apiConfig.key) throw new Error('no key');
+    const provider=PROVIDERS[apiConfig.provider];
+    const res=await fetch(provider.url,{method:'POST',headers:provider.getHeaders(apiConfig.key),body:provider.buildBody(prompt)});
+    if(!res.ok) throw new Error('provider failed');
+    const data=await res.json();
+    return provider.parseResponse(data);
+  };
+
+  try{
+    let raw;
+    try{raw=await tryAnthropic();}
+    catch(e){raw=await tryConfigured();}
+
+    let clean=raw.trim().replace(/```json|```/g,'').trim();
+    const s=clean.indexOf('{'),e=clean.lastIndexOf('}');
+    if(s===-1||e===-1) throw new Error('JSON não encontrado');
+    const parsed=JSON.parse(clean.slice(s,e+1));
+
+    if(!parsed.price){
+      statusEl.textContent='Não consegui extrair o preço. Verifique o link.';
+      statusEl.className='link-status err';
+      return;
+    }
+
+    const oldPrice=CATS[ci].items[ii].price;
+    CATS[ci].items[ii].price=parseFloat(parsed.price);
+    CATS[ci].items[ii].url=url;
+    scheduleSave();
+    render();
+
+    statusEl.textContent=`✓ Preço atualizado: R$ ${parsed.price} (era R$ ${oldPrice})${parsed.name?' — '+parsed.name:''}`;
+    statusEl.className='link-status ok';
+
+    setTimeout(()=>{closeLinkField();},2500);
+  }catch(err){
+    statusEl.textContent='Erro ao buscar preço. Tente novamente.';
+    statusEl.className='link-status err';
+    console.error(err);
+  }finally{
+    if(fetchBtn) fetchBtn.disabled=false;
+  }
 }
 
 // ── UPDATE PRICES ──
