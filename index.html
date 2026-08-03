@@ -434,163 +434,158 @@ const WHERE_CLASS={atac:'where-atac',feira:'where-feira',super:'where-super',far
 const WHERE_OPTS=Object.entries(WHERE).map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
 
 const DEFAULT_CATS=[
-  {id:'cafe',label:'Café da manhã',icon:'☕',color:'#FEF3C7',items:[
-    {name:'Leite (1L)',price:7,qty:4,where:'super',on:true},
-    {name:'Pão de forma',price:8,qty:2,where:'super',on:true},
-    {name:'Ovos (dúzia)',price:14,qty:2,where:'atac',on:true},
-    {name:'Manteiga',price:10,qty:1,where:'super',on:true},
-    {name:'Café em pó (500g)',price:15,qty:1,where:'atac',on:true},
+  {id:"cafe",label:"Café da manhã",icon:"☕",color:"#FEF3C7",items:[
+    {name:"Leite (1L)",price:7,qty:4,where:"super",on:true},
+    {name:"Pão de forma",price:8,qty:2,where:"super",on:true},
+    {name:"Ovos (dúzia)",price:14,qty:2,where:"atac",on:true},
+    {name:"Manteiga",price:10,qty:1,where:"super",on:true},
+    {name:"Café em pó (500g)",price:15,qty:1,where:"atac",on:true}
   ]},
-  {id:'almoco',label:'Almoço',icon:'🍽️',color:'#E8F5EE',items:[
-    {name:'Arroz (5kg)',price:22,qty:1,where:'atac',on:true},
-    {name:'Feijão (1kg)',price:8,qty:1,where:'atac',on:true},
-    {name:'Frango coxa/sobrecoxa (1kg)',price:14,qty:2,where:'atac',on:true},
-    {name:'Legumes variados',price:35,qty:1,where:'feira',on:true},
-    {name:'Suco em pó / caixinha',price:20,qty:1,where:'super',on:true},
-    {name:'Óleo + temperos',price:18,qty:1,where:'atac',on:true},
-    {name:'Macarrão (500g)',price:5,qty:2,where:'atac',on:true},
-    {name:'Alface / tomate',price:15,qty:1,where:'feira',on:false},
-    {name:'Batata (1kg)',price:7,qty:1,where:'feira',on:false},
-    {name:'Carne moída (500g)',price:18,qty:1,where:'super',on:false},
+  {id:"almoco",label:"Almoço",icon:"🍽️",color:"#E8F5EE",items:[
+    {name:"Arroz (5kg)",price:22,qty:1,where:"atac",on:true},
+    {name:"Feijão (1kg)",price:8,qty:1,where:"atac",on:true},
+    {name:"Frango coxa/sobrecoxa (1kg)",price:14,qty:2,where:"atac",on:true},
+    {name:"Legumes variados",price:35,qty:1,where:"feira",on:true},
+    {name:"Suco em pó / caixinha",price:20,qty:1,where:"super",on:true},
+    {name:"Óleo + temperos",price:18,qty:1,where:"atac",on:true},
+    {name:"Macarrão (500g)",price:5,qty:2,where:"atac",on:true},
+    {name:"Alface / tomate",price:15,qty:1,where:"feira",on:false},
+    {name:"Batata (1kg)",price:7,qty:1,where:"feira",on:false},
+    {name:"Carne moída (500g)",price:18,qty:1,where:"super",on:false}
   ]},
-  {id:'lanche',label:'Lanche da faculdade',icon:'🎒',color:'#EFF6FF',items:[
-    {name:'Banana (cacho)',price:10,qty:2,where:'feira',on:true},
-    {name:'Biscoito / barra de cereal',price:20,qty:1,where:'super',on:true},
-    {name:'Bebida (suco, água sab.)',price:15,qty:1,where:'super',on:true},
-    {name:'Iogurte (pack 4)',price:14,qty:1,where:'super',on:false},
-    {name:'Queijo fatiado (200g)',price:12,qty:1,where:'super',on:false},
+  {id:"lanche",label:"Lanche da faculdade",icon:"🎒",color:"#EFF6FF",items:[
+    {name:"Banana (cacho)",price:10,qty:2,where:"feira",on:true},
+    {name:"Biscoito / barra de cereal",price:20,qty:1,where:"super",on:true},
+    {name:"Bebida (suco, água sab.)",price:15,qty:1,where:"super",on:true},
+    {name:"Iogurte (pack 4)",price:14,qty:1,where:"super",on:false},
+    {name:"Queijo fatiado (200g)",price:12,qty:1,where:"super",on:false}
   ]},
-  {id:'limpeza',label:'Limpeza & higiene',icon:'🧹',color:'#F0EFE9',items:[
-    {name:'Papel higiênico (12 rolos)',price:20,qty:1,where:'atac',on:true},
-    {name:'Detergente + esponja',price:10,qty:1,where:'atac',on:true},
-    {name:'Sabão em pó (1kg)',price:20,qty:1,where:'atac',on:true},
-    {name:'Desinfetante',price:12,qty:1,where:'atac',on:true},
-    {name:'Sabonete (3 un)',price:10,qty:1,where:'atac',on:true},
-    {name:'Shampoo',price:15,qty:1,where:'super',on:true},
-    {name:'Pasta de dente',price:8,qty:1,where:'super',on:true},
-    {name:'Saco de lixo',price:8,qty:1,where:'atac',on:true},
-    {name:'Amaciante',price:12,qty:1,where:'atac',on:false},
-    {name:'Água sanitária',price:5,qty:1,where:'atac',on:false},
-    {name:'Pano de chão',price:12,qty:1,where:'atac',on:false},
-    {name:'Vassoura + rodo',price:35,qty:1,where:'atac',on:false},
+  {id:"limpeza",label:"Limpeza & higiene doméstica",icon:"🧹",color:"#F0EFE9",items:[
+    {name:"Papel higiênico (12 rolos)",price:20,qty:1,where:"atac",on:true},
+    {name:"Detergente + esponja",price:10,qty:1,where:"atac",on:true},
+    {name:"Sabão em pó (1kg)",price:20,qty:1,where:"atac",on:true},
+    {name:"Desinfetante",price:12,qty:1,where:"atac",on:true},
+    {name:"Sabonete (3 un)",price:10,qty:1,where:"atac",on:true},
+    {name:"Shampoo",price:15,qty:1,where:"super",on:true},
+    {name:"Pasta de dente",price:8,qty:1,where:"super",on:true},
+    {name:"Saco de lixo",price:8,qty:1,where:"atac",on:true},
+    {name:"Amaciante",price:12,qty:1,where:"atac",on:false},
+    {name:"Água sanitária",price:5,qty:1,where:"atac",on:false},
+    {name:"Pano de chão",price:12,qty:1,where:"atac",on:false},
+    {name:"Vassoura + rodo",price:35,qty:1,where:"atac",on:false},
+    {name:"Porta-Sabonete Líquido Fibs",price:72.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/porta-sabonete-liquido-incolor-fibra-clara-fibs/p"},
+    {name:"Porta-Escova/Pasta Arlanc",price:39.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/porta-escova-pasta-malva-arlanc/p"}
   ]},
-  {id:'beleza',label:'Beleza & cuidados',icon:'✨',color:'#FBE8F2',items:[
-    {name:'Condicionador',price:18,qty:1,where:'super',on:true},
-    {name:'Desodorante',price:12,qty:1,where:'super',on:true},
-    {name:'Hidratante corporal',price:25,qty:1,where:'super',on:true},
-    {name:'Protetor solar FPS50',price:35,qty:1,where:'super',on:true},
-    {name:'Absorvente',price:15,qty:2,where:'super',on:true},
-    {name:'Fio dental + enxaguante',price:14,qty:1,where:'super',on:true},
-    {name:'Creme facial',price:30,qty:1,where:'super',on:false},
-    {name:'Máscara capilar',price:22,qty:1,where:'super',on:false},
-    {name:'Removedor de maquiagem',price:20,qty:1,where:'super',on:false},
-    {name:'Esfoliante corporal',price:18,qty:1,where:'super',on:false},
-    {name:'Lâmina de depilação',price:15,qty:1,where:'super',on:false},
-    {name:'Algodão + cotonetes',price:8,qty:1,where:'super',on:false},
+  {id:"beleza",label:"Beleza & cuidados",icon:"✨",color:"#FBE8F2",items:[
+    {name:"Condicionador",price:18,qty:1,where:"super",on:true},
+    {name:"Desodorante",price:12,qty:1,where:"super",on:true},
+    {name:"Hidratante corporal",price:25,qty:1,where:"super",on:true},
+    {name:"Protetor solar FPS50",price:35,qty:1,where:"super",on:true},
+    {name:"Absorvente",price:15,qty:2,where:"super",on:true},
+    {name:"Fio dental + enxaguante",price:14,qty:1,where:"super",on:true},
+    {name:"Creme facial",price:30,qty:1,where:"super",on:false},
+    {name:"Máscara capilar",price:22,qty:1,where:"super",on:false},
+    {name:"Removedor de maquiagem",price:20,qty:1,where:"super",on:false},
+    {name:"Esfoliante corporal",price:18,qty:1,where:"super",on:false},
+    {name:"Lâmina de depilação",price:15,qty:1,where:"super",on:false},
+    {name:"Algodão + cotonetes",price:8,qty:1,where:"super",on:false}
   ]},
-  {id:'cama',label:'Cama, mesa & banho',icon:'🛏️',color:'#EEF0FB',items:[
-    {name:'Toalha de banho',price:45,qty:1,where:'loja',on:false},
-    {name:'Toalha de rosto',price:20,qty:1,where:'loja',on:false},
-    {name:'Jogo de lençol (solteiro)',price:70,qty:1,where:'loja',on:false},
-    {name:'Fronha avulsa',price:20,qty:2,where:'loja',on:false},
-    {name:'Travesseiro',price:50,qty:1,where:'loja',on:false},
-    {name:'Edredom / coberta',price:120,qty:1,where:'loja',on:false},
-    {name:'Tapete de banheiro',price:35,qty:1,where:'loja',on:false},
-    {name:'Tapete de quarto',price:60,qty:1,where:'loja',on:false},
-    {name:'Pano de prato (6 un)',price:25,qty:1,where:'atac',on:false},
-    {name:'Porta-shampoo box',price:30,qty:1,where:'super',on:false},
-    {name:'Jogo de toalha de mesa',price:40,qty:1,where:'loja',on:false},
-    {name:'Suporte papel higiênico',price:25,qty:1,where:'super',on:false},
+  {id:"cama",label:"Cama, mesa & banho",icon:"🛏️",color:"#EEF0FB",items:[
+    {name:"Jogo de lençol (solteiro)",price:70,qty:1,where:"loja",on:false},
+    {name:"Fronha avulsa",price:20,qty:2,where:"loja",on:false},
+    {name:"Travesseiro",price:50,qty:1,where:"loja",on:false},
+    {name:"Edredom / coberta",price:120,qty:1,where:"loja",on:false},
+    {name:"Tapete de banheiro",price:35,qty:1,where:"loja",on:false},
+    {name:"Tapete de quarto",price:60,qty:1,where:"loja",on:false},
+    {name:"Pano de prato (6 un)",price:25,qty:1,where:"atac",on:false},
+    {name:"Porta-shampoo box",price:30,qty:1,where:"super",on:false},
+    {name:"Jogo de toalha de mesa",price:40,qty:1,where:"loja",on:false},
+    {name:"Suporte papel higiênico",price:25,qty:1,where:"super",on:false},
+    {name:"Toalha de Banho Cushy 1,40m x 70cm",price:55.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/de-banho-1-40-m-x-70-cm-cushy-marrom-de-lei-toalha/p"},
+    {name:"Toalha de Rosto Undulant 80x48cm",price:45.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/toalha-de-rosto-80-cm-x-48-cm-verde-escaravelho-ondulant/p"},
+    {name:"Toalha de Lavabo Cushy 30x50cm",price:22.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/toalha-de-lavabo-30-cm-x-50-cm-preto-cushy/p"},
+    {name:"Toalha de Piso Doux Au Toucher 70x48cm",price:37.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/de-piso-70-cm-x-48-cm-doux-au-toucher-vin-rose-toalha/p"}
   ]},
-  {id:'eletro',label:'Eletrodomésticos',icon:'🔌',color:'#FFF1E6',items:[
-    {name:'Ferro de passar roupa',price:120,qty:1,where:'loja',on:false},
-    {name:'Secador de cabelo',price:90,qty:1,where:'loja',on:false},
-    {name:'Chapinha / prancha',price:80,qty:1,where:'loja',on:false},
-    {name:'Liquidificador',price:100,qty:1,where:'loja',on:false},
-    {name:'Cafeteira elétrica',price:80,qty:1,where:'loja',on:false},
-    {name:'Micro-ondas',price:450,qty:1,where:'loja',on:false},
-    {name:'Ventilador de mesa',price:150,qty:1,where:'loja',on:false},
-    {name:'Fritadeira airfryer',price:280,qty:1,where:'loja',on:false},
-    {name:'Panela elétrica de arroz',price:90,qty:1,where:'loja',on:false},
-    {name:'Extensão elétrica (3m)',price:45,qty:1,where:'super',on:false},
-    {name:'Lâmpada LED (pack 3)',price:30,qty:1,where:'atac',on:false},
-    {name:'Pilhas (pack 8)',price:18,qty:1,where:'atac',on:false},
+  {id:"eletro",label:"Eletrodomésticos & utilidades",icon:"🔌",color:"#FFF1E6",items:[
+    {name:"Ferro de passar roupa",price:120,qty:1,where:"loja",on:false},
+    {name:"Secador de cabelo",price:90,qty:1,where:"loja",on:false},
+    {name:"Chapinha / prancha",price:80,qty:1,where:"loja",on:false},
+    {name:"Liquidificador",price:100,qty:1,where:"loja",on:false},
+    {name:"Cafeteira elétrica",price:80,qty:1,where:"loja",on:false},
+    {name:"Micro-ondas",price:450,qty:1,where:"loja",on:false},
+    {name:"Ventilador de mesa",price:150,qty:1,where:"loja",on:false},
+    {name:"Fritadeira airfryer",price:280,qty:1,where:"loja",on:false},
+    {name:"Panela elétrica de arroz",price:90,qty:1,where:"loja",on:false},
+    {name:"Extensão elétrica (3m)",price:45,qty:1,where:"super",on:false},
+    {name:"Lâmpada LED (pack 3)",price:30,qty:1,where:"atac",on:false},
+    {name:"Pilhas (pack 8)",price:18,qty:1,where:"atac",on:false},
+    {name:"Luminária de Mesa LE Office USB",price:209.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/office-usb-luminaria-mesa-branco-le/p"}
   ]},
-  {id:'cozinha',label:'Utensílios de cozinha',icon:'🍳',color:'#FEF9EC',items:[
-    {name:'Jogo de panelas (3 peças)',price:120,qty:1,where:'loja',on:false},
-    {name:'Frigideira antiaderente',price:60,qty:1,where:'loja',on:false},
-    {name:'Jogo de talheres (24 peças)',price:45,qty:1,where:'loja',on:false},
-    {name:'Pratos fundos + rasos (6 un)',price:40,qty:1,where:'loja',on:false},
-    {name:'Copos / canecas (6 un)',price:30,qty:1,where:'loja',on:false},
-    {name:'Tábua de corte',price:30,qty:1,where:'super',on:false},
-    {name:'Faca do chef',price:35,qty:1,where:'super',on:false},
-    {name:'Escorredor de macarrão',price:25,qty:1,where:'super',on:false},
-    {name:'Lixeira de pia',price:20,qty:1,where:'super',on:false},
-    {name:'Pote hermético (kit)',price:35,qty:1,where:'super',on:false},
-    {name:'Filme plástico + papel alumínio',price:15,qty:1,where:'atac',on:true},
+  {id:"cozinha",label:"Utensílios de cozinha",icon:"🍳",color:"#FEF9EC",items:[
+    {name:"Jogo de panelas (3 peças)",price:120,qty:1,where:"loja",on:false},
+    {name:"Frigideira antiaderente",price:60,qty:1,where:"loja",on:false},
+    {name:"Jogo de talheres (24 peças)",price:45,qty:1,where:"loja",on:false},
+    {name:"Copos / canecas (6 un)",price:30,qty:1,where:"loja",on:false},
+    {name:"Tábua de corte",price:30,qty:1,where:"super",on:false},
+    {name:"Faca do chef",price:35,qty:1,where:"super",on:false},
+    {name:"Escorredor de macarrão",price:25,qty:1,where:"super",on:false},
+    {name:"Lixeira de pia",price:20,qty:1,where:"super",on:false},
+    {name:"Filme plástico + papel alumínio",price:15,qty:1,where:"atac",on:true},
+    {name:"Prato Fundo Maruru",price:42.9,qty:2,where:"loja",on:true,url:"https://www.tokstok.com.br/fundo-maruru-areia-argila-prato/p"},
+    {name:"Prato Sobremesa Maruru",price:35.9,qty:2,where:"loja",on:true,url:"https://www.tokstok.com.br/sobremesa-maruru-areia-argila-prato/p"},
+    {name:"Prato Raso Maruru",price:49.9,qty:2,where:"loja",on:true,url:"https://www.tokstok.com.br/raso-maruru-areia-argila-prato/p"},
+    {name:"Xícara Chá Maruru",price:49.9,qty:2,where:"loja",on:true,url:"https://www.tokstok.com.br/cha-maruru-areia-argila-xicara/p"},
+    {name:"Pote Hermético 800ml Between",price:35.9,qty:2,where:"loja",on:true,url:"https://www.tokstok.com.br/hermetico-800ml-between-incolor-branco-pote/p"},
+    {name:"Pote Hermético 150ml Bambucci",price:15.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/pratic-pote-hermetico-150-ml-incolor-bambu-bamboo/p"},
+    {name:"Pote Café 550ml Paparico",price:79.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/cafe-550-ml-paparico-camelo-acacia-pote/p"},
+    {name:"Pote Açúcar 450ml Paparico",price:69.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/acucar-450-ml-paparico-camelo-acacia-pote/p"},
+    {name:"Lugar Americano 45x30cm Triunff",price:12.9,qty:4,where:"loja",on:true,url:"https://www.tokstok.com.br/lugar-americano-45-cm-x-30-cm-galaxy-blue-triunff/p"},
+    {name:"Bandeja 38x24cm Bamboo",price:67.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/bandeja-38-cm-x-24-cm-bambu-bamboo/p"},
+    {name:"Bandeja com Pé 50x30cm Bamboo",price:119.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/bandeja-50-cm-x-30-cm-bambu-bamboo/p"},
+    {name:"Coqueteleira 600ml Hellin",price:95.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/coqueteleira-c-receitas-600-ml-inox-hellin/p"},
+    {name:"Saca-Rolhas Multiuso Mind",price:75.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/saca-rolhas-multiuso-zinco-mind/p"},
+    {name:"Descanso Cascalho",price:29.9,qty:2,where:"loja",on:true,url:"https://www.tokstok.com.br/descanso-branco-fibra-clara-cascalho/p"}
   ]},
-  {id:'farmacia',label:'Farmácia & saúde',icon:'💊',color:'#F0FFF4',items:[
-    {name:'Analgésico (dipirona/ibuprofeno)',price:18,qty:1,where:'farm',on:true},
-    {name:'Band-aid / curativo',price:12,qty:1,where:'farm',on:true},
-    {name:'Álcool gel 70%',price:10,qty:1,where:'atac',on:true},
-    {name:'Vitamina C / multivitamínico',price:35,qty:1,where:'farm',on:false},
-    {name:'Antiácido (sal de fruta)',price:12,qty:1,where:'farm',on:false},
-    {name:'Pomada cicatrizante',price:15,qty:1,where:'farm',on:false},
-    {name:'Termômetro',price:40,qty:1,where:'farm',on:false},
-    {name:'Proteção menstrual (coletor/calça)',price:60,qty:1,where:'farm',on:false},
-    {name:'Colágeno / suplemento',price:55,qty:1,where:'farm',on:false},
+  {id:"farmacia",label:"Farmácia & saúde",icon:"💊",color:"#F0FFF4",items:[
+    {name:"Analgésico (dipirona/ibuprofeno)",price:18,qty:1,where:"farm",on:true},
+    {name:"Band-aid / curativo",price:12,qty:1,where:"farm",on:true},
+    {name:"Álcool gel 70%",price:10,qty:1,where:"atac",on:true},
+    {name:"Vitamina C / multivitamínico",price:35,qty:1,where:"farm",on:false},
+    {name:"Antiácido (sal de fruta)",price:12,qty:1,where:"farm",on:false},
+    {name:"Pomada cicatrizante",price:15,qty:1,where:"farm",on:false},
+    {name:"Termômetro",price:40,qty:1,where:"farm",on:false},
+    {name:"Proteção menstrual (coletor/calça)",price:60,qty:1,where:"farm",on:false},
+    {name:"Colágeno / suplemento",price:55,qty:1,where:"farm",on:false}
   ]},
-  {id:'papelaria',label:'Papelaria & escritório',icon:'📓',color:'#FAEEDA',items:[
-    {name:'Caneta esferográfica (pack 4)',price:8,qty:1,where:'super',on:true},
-    {name:'Caderno universitário',price:25,qty:1,where:'super',on:true},
-    {name:'Post-it / anotações',price:12,qty:1,where:'super',on:false},
-    {name:'Grampeador + grampos',price:30,qty:1,where:'super',on:false},
-    {name:'Marcador de texto',price:8,qty:1,where:'super',on:false},
-    {name:'Tesoura',price:12,qty:1,where:'super',on:false},
-    {name:'Fita adesiva + durex',price:10,qty:1,where:'super',on:false},
-    {name:'Pasta / fichário',price:20,qty:1,where:'super',on:false},
+  {id:"papelaria",label:"Papelaria & escritório",icon:"📓",color:"#FAEEDA",items:[
+    {name:"Caneta esferográfica (pack 4)",price:8,qty:1,where:"super",on:true},
+    {name:"Caderno universitário",price:25,qty:1,where:"super",on:true},
+    {name:"Post-it / anotações",price:12,qty:1,where:"super",on:false},
+    {name:"Grampeador + grampos",price:30,qty:1,where:"super",on:false},
+    {name:"Marcador de texto",price:8,qty:1,where:"super",on:false},
+    {name:"Tesoura",price:12,qty:1,where:"super",on:false},
+    {name:"Fita adesiva + durex",price:10,qty:1,where:"super",on:false},
+    {name:"Pasta / fichário",price:20,qty:1,where:"super",on:false}
   ]},
-  {id:'casa',label:'Organização do apê',icon:'🏠',color:'#F2F2F0',items:[
-    {name:'Cabide (pack 10)',price:20,qty:1,where:'atac',on:false},
-    {name:'Organizador de gaveta',price:30,qty:1,where:'super',on:false},
-    {name:'Cesto de roupa suja',price:50,qty:1,where:'super',on:false},
-    {name:'Lixeira com pedal',price:45,qty:1,where:'super',on:false},
-    {name:'Balde de limpeza',price:20,qty:1,where:'atac',on:false},
-    {name:'Desentupidor',price:15,qty:1,where:'atac',on:false},
-    {name:'Vela / difusor de ambiente',price:35,qty:1,where:'super',on:false},
-    {name:'Caixas organizadoras',price:45,qty:2,where:'super',on:false},
-    {name:'Reparador multiuso (WD-40)',price:25,qty:1,where:'super',on:false},
-    {name:'Suporte de parede / prateleira',price:40,qty:1,where:'super',on:false},
-  ]},
-,
-    {name:"Toalha de Banho Cushy 1,40m x 70cm",price:55.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/de-banho-1-40-m-x-70-cm-cushy-marrom-de-lei-toalha/p'},
-    {name:"Toalha de Rosto Undulant 80cm x 48cm",price:45.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/toalha-de-rosto-80-cm-x-48-cm-verde-escaravelho-ondulant/p'},
-    {name:"Toalha de Lavabo Cushy 30cm x 50cm",price:22.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/toalha-de-lavabo-30-cm-x-50-cm-preto-cushy/p'},
-    {name:"Toalha de Piso Doux Au Toucher 70x48cm",price:37.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/de-piso-70-cm-x-48-cm-doux-au-toucher-vin-rose-toalha/p'},
-    {name:"Prato Fundo Maruru",price:42.9,qty:2,where:'loja',on:true,url:'https://www.tokstok.com.br/fundo-maruru-areia-argila-prato/p'},
-    {name:"Prato Sobremesa Maruru",price:35.9,qty:2,where:'loja',on:true,url:'https://www.tokstok.com.br/sobremesa-maruru-areia-argila-prato/p'},
-    {name:"Prato Raso Maruru",price:49.9,qty:2,where:'loja',on:true,url:'https://www.tokstok.com.br/raso-maruru-areia-argila-prato/p'},
-    {name:"Xícara Chá Maruru",price:49.9,qty:2,where:'loja',on:true,url:'https://www.tokstok.com.br/cha-maruru-areia-argila-xicara/p'},
-    {name:"Pote Hermético 800ml Between",price:35.9,qty:2,where:'loja',on:true,url:'https://www.tokstok.com.br/hermetico-800ml-between-incolor-branco-pote/p'},
-    {name:"Pote Hermético 150ml Bambucci",price:15.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/pratic-pote-hermetico-150-ml-incolor-bambu-bamboo/p'},
-    {name:"Pote Café 550ml Paparico",price:79.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/cafe-550-ml-paparico-camelo-acacia-pote/p'},
-    {name:"Pote Açúcar 450ml Paparico",price:69.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/acucar-450-ml-paparico-camelo-acacia-pote/p'},
-    {name:"Lugar Americano 45x30cm Triunff",price:12.9,qty:4,where:'loja',on:true,url:'https://www.tokstok.com.br/lugar-americano-45-cm-x-30-cm-galaxy-blue-triunff/p'},
-    {name:"Bandeja 38x24cm Bamboo",price:67.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/bandeja-38-cm-x-24-cm-bambu-bamboo/p'},
-    {name:"Bandeja com Pé 50x30cm Bamboo",price:119.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/bandeja-50-cm-x-30-cm-bambu-bamboo/p'},
-    {name:"Coqueteleira com Receitas 600ml Hellin",price:95.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/coqueteleira-c-receitas-600-ml-inox-hellin/p'},
-    {name:"Saca-Rolhas Multiuso Mind",price:75.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/saca-rolhas-multiuso-zinco-mind/p'},
-    {name:"Descanso Cascalho (jogo 2)",price:29.9,qty:2,where:'loja',on:true,url:'https://www.tokstok.com.br/descanso-branco-fibra-clara-cascalho/p'},
-    {name:"Cesto Organizador Breezy 26x38x26cm",price:47.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/organizador-26-cm-x-38-cm-x-26-cm-breezy-preto-cesto/p'},
-    {name:"Varal de Chão Dobrável Hold Out 143x50",price:119.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/out-varal-de-chao-dobravel-c-abas-143x50-branco-salvia-hold/p'},
-    {name:"Capacho 40x60cm Pierrot",price:77.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/capacho-40-cm-x-60-cm-multicor-pierrot/p'},
-    {name:"Pano de Limpeza c/2 Daily Cleaning",price:9.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/cleaning-pano-de-limpeza-c-2-sorbet-de-manga-daily/p'},
-    {name:"Balde 8,5L Wash (cinza)",price:42.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/balde-8-5-l-konkret-cinza-wash/p'},
-    {name:"Balde 8,5L Wash (bege)",price:42.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/balde-8-5-l-salvia-bege-wash/p'},
-    {name:"Bacia 5L Wash",price:32.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/bacia-5-l-konkret-cinza-wash/p'},
-    {name:"Porta-Sabonete Líquido Fibs",price:72.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/porta-sabonete-liquido-incolor-fibra-clara-fibs/p'},
-    {name:"Porta-Escova/Pasta Arlanc",price:39.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/porta-escova-pasta-malva-arlanc/p'},
-    {name:"Luminária de Mesa LE Office USB",price:209.9,qty:1,where:'loja',on:true,url:'https://www.tokstok.com.br/office-usb-luminaria-mesa-branco-le/p'}];
+  {id:"casa",label:"Organização do apê",icon:"🏠",color:"#F2F2F0",items:[
+    {name:"Cabide (pack 10)",price:20,qty:1,where:"atac",on:false},
+    {name:"Organizador de gaveta",price:30,qty:1,where:"super",on:false},
+    {name:"Cesto de roupa suja",price:50,qty:1,where:"super",on:false},
+    {name:"Lixeira com pedal",price:45,qty:1,where:"super",on:false},
+    {name:"Desentupidor",price:15,qty:1,where:"atac",on:false},
+    {name:"Vela / difusor de ambiente",price:35,qty:1,where:"super",on:false},
+    {name:"Reparador multiuso (WD-40)",price:25,qty:1,where:"super",on:false},
+    {name:"Suporte de parede / prateleira",price:40,qty:1,where:"super",on:false},
+    {name:"Cesto Organizador Breezy 26x38x26cm",price:47.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/organizador-26-cm-x-38-cm-x-26-cm-breezy-preto-cesto/p"},
+    {name:"Varal de Chão Dobrável Hold Out 143x50",price:119.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/out-varal-de-chao-dobravel-c-abas-143x50-branco-salvia-hold/p"},
+    {name:"Capacho 40x60cm Pierrot",price:77.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/capacho-40-cm-x-60-cm-multicor-pierrot/p"},
+    {name:"Pano de Limpeza c/2 Daily Cleaning",price:9.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/cleaning-pano-de-limpeza-c-2-sorbet-de-manga-daily/p"},
+    {name:"Balde 8,5L Wash (cinza)",price:42.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/balde-8-5-l-konkret-cinza-wash/p"},
+    {name:"Balde 8,5L Wash (bege)",price:42.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/balde-8-5-l-salvia-bege-wash/p"},
+    {name:"Bacia 5L Wash",price:32.9,qty:1,where:"loja",on:true,url:"https://www.tokstok.com.br/bacia-5-l-konkret-cinza-wash/p"},
+    {name:"Caixas organizadoras",price:45,qty:2,where:"super",on:false}
+  ]}
+];
 
 const CAT_COLORS=['#4100F5','#F037A5','#FF4632','#9BF0E1','#CDF564','#7B2FF7','#F037A5','#FF4632','#4100F5','#9BF0E1','#CDF564'];
 
@@ -617,8 +612,8 @@ async function loadFromCloud(){
       {headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}});
     if(!res.ok)throw new Error();
     const rows=await res.json();
-    if(rows.length>0){
-      if(rows[0].dados)CATS=rows[0].dados;
+    if(rows.length>0 && rows[0].dados){
+      CATS=rows[0].dados;
       if(rows[0].config)apiConfig=rows[0].config;
       if(rows[0].atualizado_em){
         const d=new Date(rows[0].atualizado_em);
@@ -626,8 +621,16 @@ async function loadFromCloud(){
       }
     }
     setSyncState('saved','sincronizado');
-  }catch(e){setSyncState('error','erro ao carregar')}
+  }catch(e){
+    setSyncState('error','erro ao carregar');
+    // Use defaults if cloud unavailable
+    CATS=JSON.parse(JSON.stringify(DEFAULT_CATS));
+  }
   render();
+  // If first load with no cloud data, save defaults
+  if(CATS===DEFAULT_CATS||!document.getElementById('last-updated').textContent){
+    setTimeout(saveToCloud, 2000);
+  }
 }
 
 async function saveToCloud(){
