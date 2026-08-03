@@ -3,172 +3,220 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minha Lista de Mercado</title>
+<title>Minha Lista — SP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#F7F6F2;--surface:#FFFFFF;--surface2:#F0EFE9;
-  --ink:#1A1917;--ink2:#6B6960;--ink3:#AEADA6;
+:root{
+  --cream:#F5F0E8;--red:#9B1B1B;--red2:#7A1515;--gold:#C8932A;
+  --ink:#1A1410;--ink2:#5C4E3D;--ink3:#A89880;
+  --surface:#FFFFFF;--surface2:#EDE8DF;
   --green:#2D6A4F;--green-bg:#E8F5EE;
   --amber:#92400E;--amber-bg:#FEF3C7;
   --blue:#1E40AF;--blue-bg:#EFF6FF;
-  --red:#991B1B;
-  --border:rgba(26,25,23,0.1);--border2:rgba(26,25,23,0.06);
-  --radius:12px;--radius-sm:7px;
-  --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+  --rose:#991B1B;--rose-bg:#FEE2E2;
+  --purple:#6B21A8;--purple-bg:#F3E8FF;
+  --border:rgba(26,20,16,0.12);--border2:rgba(26,20,16,0.06);
+  --r:10px;--r-sm:6px;
+  --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;--display:'Bebas Neue',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.6}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);min-height:100vh;line-height:1.6}
 
-.hero{padding:72px 24px 56px;max-width:860px;margin:0 auto}
-.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:20px;display:flex;align-items:center;gap:8px}
-.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--ink3);display:inline-block}
-.hero h1{font-size:clamp(32px,5vw,52px);font-weight:300;letter-spacing:-.02em;line-height:1.1;color:var(--ink);margin-bottom:20px}
-.hero h1 em{font-style:normal;font-weight:500}
-.hero-sub{font-size:15px;color:var(--ink2);max-width:460px;line-height:1.65;margin-bottom:32px}
-.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.update-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--green);background:var(--green-bg);border:1px solid rgba(45,106,79,.2);border-radius:999px;padding:8px 18px;cursor:pointer;transition:background .15s,border-color .15s}
-.update-btn:hover{background:#D5EDDF;border-color:rgba(45,106,79,.35)}
-.update-btn:disabled{opacity:.5;cursor:not-allowed}
-.update-btn svg{width:14px;height:14px;flex-shrink:0}
-.sync-indicator{font-family:var(--mono);font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:6px}
+/* ── TICKER ── */
+.ticker-wrap{background:var(--red);overflow:hidden;white-space:nowrap;padding:8px 0}
+.ticker{display:inline-block;animation:ticker 28s linear infinite}
+.ticker span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:0 32px}
+.ticker span::before{content:'✦';margin-right:32px;opacity:.6}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── NAV ── */
+nav{max-width:1000px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--display);font-size:28px;letter-spacing:.02em;color:var(--red);line-height:1}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-sync{font-family:var(--mono);font-size:10px;color:var(--ink3);display:flex;align-items:center;gap:6px}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--ink3);flex-shrink:0;transition:background .3s}
 .sync-dot.saving{background:#F59E0B;animation:pulse .8s infinite}
-.sync-dot.saved{background:#2D6A4F}
+.sync-dot.saved{background:var(--green)}
 .sync-dot.error{background:var(--red)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.last-updated{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:12px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.cfg-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink2);background:transparent;border:1.5px solid var(--border);border-radius:999px;padding:6px 14px;cursor:pointer;transition:all .15s}
+.cfg-btn:hover{background:var(--surface2);border-color:var(--ink3)}
+.cfg-btn svg{width:12px;height:12px}
 
-.status-banner{max-width:860px;margin:0 auto 8px;padding:0 24px}
-.status-msg{font-size:13px;padding:10px 14px;border-radius:var(--radius-sm);display:none}
+/* ── HERO ── */
+.hero{background:var(--red);padding:60px 24px 52px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'LISTA';font-family:var(--display);font-size:clamp(120px,25vw,260px);color:rgba(255,255,255,.04);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;line-height:1}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:16px}
+.hero h1{font-family:var(--display);font-size:clamp(48px,10vw,96px);letter-spacing:.02em;color:#fff;line-height:.95;margin-bottom:20px}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero-sub{font-size:14px;color:rgba(255,255,255,.65);max-width:400px;margin:0 auto 32px;line-height:1.65}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.update-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;background:transparent;border:2px solid rgba(255,255,255,.35);border-radius:999px;padding:10px 22px;cursor:pointer;transition:all .2s}
+.update-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.6)}
+.update-btn:disabled{opacity:.4;cursor:not-allowed}
+.update-btn svg{width:14px;height:14px}
+.last-updated{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);margin-top:14px;letter-spacing:.04em}
+
+/* ── STATUS ── */
+.status-banner{max-width:1000px;margin:0 auto;padding:0 24px}
+.status-msg{font-size:13px;padding:10px 16px;border-radius:var(--r-sm);display:none;margin:12px 0 0}
 .status-msg.info{background:var(--blue-bg);color:var(--blue);display:block}
 .status-msg.success{background:var(--green-bg);color:var(--green);display:block}
-.status-msg.error{background:#FEF2F2;color:var(--red);display:block}
+.status-msg.error{background:var(--rose-bg);color:var(--rose);display:block}
 
-.metrics{max-width:860px;margin:0 auto 32px;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.metric{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:16px 18px}
-.metric-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
-.metric-val{font-size:24px;font-weight:300;letter-spacing:-.02em;color:var(--ink)}
-.metric-val span{font-size:13px;font-weight:500;color:var(--ink2)}
+/* ── METRICS ── */
+.metrics-section{background:var(--ink);padding:0 24px}
+.metrics-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.08)}
+.metric{padding:24px 20px;border-right:1px solid rgba(255,255,255,.08)}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px}
+.metric-val{font-family:var(--display);font-size:32px;letter-spacing:.01em;color:#fff;line-height:1}
+.metric-val small{font-family:var(--sans);font-size:12px;font-weight:400;color:rgba(255,255,255,.4);margin-left:2px}
+@media(max-width:600px){.metrics-inner{grid-template-columns:repeat(2,1fr)}}
 
-.main{max-width:860px;margin:0 auto;padding:0 24px 64px}
+/* ── SECTION TITLES ── */
+.section{max-width:1000px;margin:0 auto;padding:48px 24px 24px}
+.section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:28px;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.section-title{font-family:var(--display);font-size:clamp(28px,5vw,40px);letter-spacing:.02em;color:var(--ink);line-height:1}
+.section-count{font-family:var(--mono);font-size:11px;color:var(--ink3)}
+.section-total{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink);margin-left:auto}
 
-.cat-block{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
-.cat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--surface2);border-bottom:1px solid var(--border2);cursor:pointer;user-select:none}
-.cat-header-left{display:flex;align-items:center;gap:10px}
-.cat-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.cat-name{font-size:13px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
-.cat-count{font-family:var(--mono);font-size:11px;color:var(--ink3)}
-.cat-subtotal{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)}
-.cat-chevron{color:var(--ink3);font-size:12px;margin-left:10px;transition:transform .2s;display:inline-block}
-.cat-chevron.open{transform:rotate(180deg)}
-.cat-body{display:block}
-.cat-body.collapsed{display:none}
+/* ── CATEGORY GRID ── */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:12px}
 
-.item-row{display:flex;align-items:center;gap:10px;padding:9px 18px;border-bottom:1px solid var(--border2);transition:background .1s;min-height:44px}
+/* ── CAT CARD ── */
+.cat-card{background:var(--surface);border-radius:var(--r);border:1.5px solid var(--border2);overflow:hidden;transition:box-shadow .2s}
+.cat-card:hover{box-shadow:0 4px 24px rgba(26,20,16,.08)}
+.cat-card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none;border-bottom:1.5px solid var(--border2)}
+.cat-card-header:hover{background:var(--surface2)}
+.cat-card-left{display:flex;align-items:center;gap:10px}
+.cat-icon-wrap{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.cat-card-name{font-size:13px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+.cat-card-meta{font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:1px}
+.cat-card-right{display:flex;align-items:center;gap:8px}
+.cat-card-total{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)}
+.chevron{color:var(--ink3);font-size:11px;transition:transform .2s;display:inline-block}
+.chevron.open{transform:rotate(180deg)}
+.cat-card-body{display:block}
+.cat-card-body.collapsed{display:none}
+
+/* ── ITEM ROW ── */
+.item-row{display:flex;align-items:center;gap:8px;padding:9px 16px;border-bottom:1px solid var(--border2);min-height:42px;transition:background .1s}
 .item-row:last-child{border-bottom:none}
 .item-row:hover{background:#FAFAF8}
 .item-row:hover .edit-btn{opacity:1}
-.item-check{width:15px;height:15px;cursor:pointer;accent-color:var(--green);flex-shrink:0}
-.item-name{flex:1;font-size:14px;color:var(--ink);cursor:pointer;user-select:none;min-width:0}
+.item-check{width:14px;height:14px;cursor:pointer;accent-color:var(--red);flex-shrink:0}
+.item-name{flex:1;font-size:13px;color:var(--ink);cursor:pointer;user-select:none;min-width:0;line-height:1.3}
 .item-name.off{color:var(--ink3);text-decoration:line-through}
-.where-badge{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap;flex-shrink:0}
+.where-badge{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;white-space:nowrap;flex-shrink:0}
 .where-atac{background:var(--green-bg);color:var(--green)}
 .where-feira{background:var(--amber-bg);color:var(--amber)}
 .where-super{background:var(--blue-bg);color:var(--blue)}
-.where-farm{background:#FEE2E2;color:#991B1B}
-.where-loja{background:#F3E8FF;color:#6B21A8}
-.qty-ctrl{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.qty-btn{width:22px;height:22px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--ink2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .1s;line-height:1;padding:0}
+.where-farm{background:var(--rose-bg);color:var(--rose)}
+.where-loja{background:var(--purple-bg);color:var(--purple)}
+.qty-ctrl{display:flex;align-items:center;gap:3px;flex-shrink:0}
+.qty-btn{width:20px;height:20px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--ink2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .1s;line-height:1;padding:0}
 .qty-btn:hover{background:var(--surface2)}
-.qty-val{font-family:var(--mono);font-size:12px;color:var(--ink);min-width:18px;text-align:center}
-.item-price{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink);min-width:60px;text-align:right;flex-shrink:0}
+.qty-val{font-family:var(--mono);font-size:11px;color:var(--ink);min-width:16px;text-align:center}
+.item-price{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--ink);min-width:52px;text-align:right;flex-shrink:0}
 .item-price.updated{color:var(--green);animation:flash .6s ease}
-@keyframes flash{0%{background:var(--green-bg);border-radius:4px}100%{background:transparent}}
-.edit-btn{width:22px;height:22px;border:none;background:transparent;color:var(--ink3);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;opacity:0;transition:opacity .15s,color .1s;padding:0}
+@keyframes flash{0%{background:var(--green-bg);border-radius:3px}100%{background:transparent}}
+.edit-btn{width:20px;height:20px;border:none;background:transparent;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;opacity:0;transition:opacity .15s,color .1s;padding:0}
 .edit-btn:hover{color:var(--blue)}
-.del-btn{width:22px;height:22px;border:none;background:transparent;color:var(--ink3);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;line-height:1;transition:color .1s;padding:0}
+.del-btn{width:20px;height:20px;border:none;background:transparent;color:var(--ink3);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;line-height:1;transition:color .1s;padding:0}
 .del-btn:hover{color:var(--red)}
 
-.edit-row{display:none;align-items:center;gap:6px;padding:8px 18px;border-bottom:1px solid var(--border2);background:#FAFAF8;flex-wrap:wrap}
+/* ── EDIT ROW ── */
+.edit-row{display:none;align-items:center;gap:5px;padding:7px 16px;border-bottom:1px solid var(--border2);background:#FAFAF8;flex-wrap:wrap}
 .edit-row.active{display:flex}
-.edit-row input[type="text"]{flex:1;min-width:100px;font-family:var(--sans);font-size:13px;padding:5px 9px;border:1px solid rgba(45,106,79,.5);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none}
-.edit-row input[type="number"]{width:72px;font-family:var(--mono);font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none}
-.edit-row select{font-family:var(--sans);font-size:12px;padding:5px 6px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none;cursor:pointer}
-.save-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 12px;border:1px solid rgba(45,106,79,.3);border-radius:var(--radius-sm);background:var(--green-bg);color:var(--green);cursor:pointer;white-space:nowrap;transition:background .1s}
-.save-btn:hover{background:#D5EDDF}
-.cancel-btn{font-family:var(--sans);font-size:12px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.edit-row input[type="text"]{flex:1;min-width:90px;font-family:var(--sans);font-size:12px;padding:5px 8px;border:1.5px solid rgba(155,27,27,.4);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none}
+.edit-row input[type="number"]{width:66px;font-family:var(--mono);font-size:12px;padding:5px 6px;border:1px solid var(--border);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none}
+.edit-row select{font-family:var(--sans);font-size:11px;padding:5px 5px;border:1px solid var(--border);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none;cursor:pointer}
+.save-btn{font-family:var(--sans);font-size:11px;font-weight:500;padding:5px 10px;border:1px solid rgba(155,27,27,.3);border-radius:var(--r-sm);background:#fdeaea;color:var(--red);cursor:pointer;white-space:nowrap}
+.save-btn:hover{background:#fbd5d5}
+.cancel-btn{font-family:var(--sans);font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--r-sm);background:transparent;color:var(--ink2);cursor:pointer;white-space:nowrap}
 .cancel-btn:hover{background:var(--surface2)}
 
-.add-area{padding:10px 18px;border-top:1px solid var(--border2);background:#FAFAF8}
-.add-row{display:flex;gap:6px;flex-wrap:wrap}
-.add-row input[type="text"]{flex:1;min-width:120px;font-family:var(--sans);font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none;transition:border-color .15s}
-.add-row input[type="text"]:focus{border-color:rgba(45,106,79,.5)}
+/* ── ADD AREA ── */
+.add-area{padding:8px 16px;border-top:1px solid var(--border2);background:#FAFAF8}
+.add-row{display:flex;gap:5px;flex-wrap:wrap}
+.add-row input[type="text"]{flex:1;min-width:100px;font-family:var(--sans);font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none;transition:border-color .15s}
+.add-row input[type="text"]:focus{border-color:rgba(155,27,27,.4)}
 .add-row input[type="text"]::placeholder{color:var(--ink3)}
-.add-row input[type="number"]{width:72px;font-family:var(--mono);font-size:13px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none}
-.add-row select{font-family:var(--sans);font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none;cursor:pointer}
-.add-btn-inline{font-family:var(--sans);font-size:12px;font-weight:500;padding:6px 12px;border:1px solid rgba(45,106,79,.3);border-radius:var(--radius-sm);background:var(--green-bg);color:var(--green);cursor:pointer;white-space:nowrap;transition:background .1s}
-.add-btn-inline:hover{background:#D5EDDF}
+.add-row input[type="number"]{width:66px;font-family:var(--mono);font-size:12px;padding:6px 6px;border:1px solid var(--border);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none}
+.add-row select{font-family:var(--sans);font-size:11px;padding:6px 5px;border:1px solid var(--border);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none;cursor:pointer}
+.add-btn-inline{font-family:var(--sans);font-size:11px;font-weight:500;padding:6px 10px;border:1px solid rgba(155,27,27,.3);border-radius:var(--r-sm);background:#fdeaea;color:var(--red);cursor:pointer;white-space:nowrap;transition:background .1s}
+.add-btn-inline:hover{background:#fbd5d5}
 
-.breakdown{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:20px 24px;margin-top:20px}
-.breakdown-title{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
-.breakdown-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);padding:5px 0;border-bottom:1px solid var(--border2)}
-.breakdown-row:last-of-type{border-bottom:none}
-.breakdown-total{display:flex;justify-content:space-between;align-items:baseline;padding-top:14px;margin-top:6px;border-top:1px solid var(--border)}
-.breakdown-total-label{font-size:14px;font-weight:500;color:var(--ink)}
-.breakdown-total-val{font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-.02em;color:var(--ink)}
-.tip-box{margin-top:14px;padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;color:var(--green);background:var(--green-bg);line-height:1.55;display:none}
+/* ── BREAKDOWN ── */
+.breakdown-section{background:var(--ink);margin-top:0;padding:48px 24px}
+.breakdown-inner{max-width:1000px;margin:0 auto}
+.breakdown-title{font-family:var(--display);font-size:clamp(32px,6vw,52px);color:#fff;letter-spacing:.02em;margin-bottom:32px}
+.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);overflow:hidden}
+.breakdown-item{background:var(--ink);padding:20px;display:flex;flex-direction:column;gap:6px}
+.breakdown-item-icon{font-size:18px}
+.breakdown-item-name{font-size:12px;color:rgba(255,255,255,.45);line-height:1.3}
+.breakdown-item-val{font-family:var(--display);font-size:26px;color:#fff;letter-spacing:.01em;line-height:1}
+.breakdown-total-row{display:flex;align-items:baseline;justify-content:space-between;margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12)}
+.breakdown-total-label{font-size:14px;color:rgba(255,255,255,.5)}
+.breakdown-total-val{font-family:var(--display);font-size:clamp(36px,7vw,64px);color:#fff;letter-spacing:.01em;line-height:1}
+.tip-box{margin-top:16px;padding:14px 18px;border-radius:var(--r-sm);font-size:13px;color:rgba(255,255,255,.7);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);line-height:1.55;display:none}
 .tip-box.show{display:block}
 
-footer{text-align:center;padding:24px;font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.04em}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spin{animation:spin .8s linear infinite}
-@media(max-width:520px){.where-badge{display:none}.item-name{font-size:13px}.hero h1{font-size:28px}}
-.cfg-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:13px;color:var(--ink2);background:transparent;border:1px solid var(--border);border-radius:999px;padding:7px 14px;cursor:pointer;transition:background .15s}
-.cfg-btn:hover{background:var(--surface2)}
-.cfg-btn svg{width:13px;height:13px;flex-shrink:0}
-.modal-overlay{position:fixed;inset:0;background:rgba(26,25,23,.35);backdrop-filter:blur(3px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+/* ── FOOTER TICKER ── */
+.footer-ticker{background:var(--gold);overflow:hidden;white-space:nowrap;padding:10px 0}
+.footer-ticker .ticker span{color:var(--ink);font-size:12px}
+
+footer{background:var(--ink);text-align:center;padding:20px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.06em}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,20,16,.5);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border2);padding:28px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.12)}
-.modal-title{font-size:16px;font-weight:500;color:var(--ink);margin-bottom:6px;letter-spacing:-.01em}
+.modal{background:var(--cream);border-radius:var(--r);border:2px solid var(--border);padding:32px;max-width:480px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.2)}
+.modal-title{font-family:var(--display);font-size:28px;letter-spacing:.02em;color:var(--ink);margin-bottom:6px}
 .modal-sub{font-size:13px;color:var(--ink2);margin-bottom:24px;line-height:1.55}
-.field-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;display:block}
-.field-select{width:100%;font-family:var(--sans);font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none;cursor:pointer;margin-bottom:14px}
-.field-input{width:100%;font-family:var(--mono);font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none;margin-bottom:6px;transition:border-color .15s}
-.field-input:focus{border-color:rgba(45,106,79,.5)}
+.field-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;display:block}
+.field-select{width:100%;font-family:var(--sans);font-size:13px;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none;cursor:pointer;margin-bottom:14px}
+.field-input{width:100%;font-family:var(--mono);font-size:13px;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none;margin-bottom:6px;transition:border-color .15s}
+.field-input:focus{border-color:var(--red)}
 .field-input::placeholder{color:var(--ink3)}
-.field-hint{font-size:12px;color:var(--ink3);margin-bottom:20px;line-height:1.5}
-.field-hint a{color:var(--green);text-decoration:none}
+.field-hint{font-size:12px;color:var(--ink3);margin-bottom:20px;line-height:1.55}
+.field-hint a{color:var(--red);text-decoration:none}
 .field-hint a:hover{text-decoration:underline}
-.modal-status{font-size:13px;padding:8px 12px;border-radius:var(--radius-sm);margin-bottom:14px;display:none}
+.modal-status{font-size:13px;padding:9px 12px;border-radius:var(--r-sm);margin-bottom:14px;display:none}
 .modal-status.ok{background:var(--green-bg);color:var(--green);display:block}
-.modal-status.err{background:#FEF2F2;color:var(--red);display:block}
+.modal-status.err{background:var(--rose-bg);color:var(--rose);display:block}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end}
-.modal-save{font-family:var(--sans);font-size:13px;font-weight:500;padding:8px 18px;border:1px solid rgba(45,106,79,.3);border-radius:var(--radius-sm);background:var(--green-bg);color:var(--green);cursor:pointer;transition:background .1s}
-.modal-save:hover{background:#D5EDDF}
-.modal-cancel{font-family:var(--sans);font-size:13px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--ink2);cursor:pointer}
+.modal-save{font-family:var(--sans);font-size:13px;font-weight:500;padding:9px 20px;border:none;border-radius:var(--r-sm);background:var(--red);color:#fff;cursor:pointer;transition:background .1s}
+.modal-save:hover{background:var(--red2)}
+.modal-cancel{font-family:var(--sans);font-size:13px;padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:transparent;color:var(--ink2);cursor:pointer}
 .modal-cancel:hover{background:var(--surface2)}
-.api-status-row{display:flex;align-items:center;gap:8px;margin-bottom:20px;padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);font-size:13px;color:var(--ink2)}
+.api-status-row{display:flex;align-items:center;gap:8px;margin-bottom:20px;padding:10px 12px;background:var(--surface2);border-radius:var(--r-sm);font-size:13px;color:var(--ink2)}
 .api-dot{width:8px;height:8px;border-radius:50%;background:var(--ink3);flex-shrink:0}
 .api-dot.configured{background:var(--green)}
 .api-dot.missing{background:#F59E0B}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .8s linear infinite}
+@media(max-width:520px){.where-badge{display:none}.cat-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <p class="hero-eyebrow">São Paulo · lista pessoal</p>
-  <h1>Meu apartamento,<br><em>organizado.</em></h1>
-  <p class="hero-sub">Lista completa para morar sozinha — mercado, beleza, cama/mesa/banho, eletrodomésticos, farmácia e mais. Tudo salvo automaticamente na nuvem.</p>
-  <div class="hero-actions">
-    <button class="update-btn" id="update-btn" onclick="updatePrices()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="update-icon">
-        <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-      </svg>
-      Atualizar preços agora
-    </button>
-    <div class="sync-indicator">
+<!-- TICKER TOP -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>Mercado SP</span><span>Feira Livre</span><span>Atacadão</span><span>Farmácia</span><span>Eletro</span><span>Beleza</span><span>Casa</span>
+    <span>Mercado SP</span><span>Feira Livre</span><span>Atacadão</span><span>Farmácia</span><span>Eletro</span><span>Beleza</span><span>Casa</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MINHA<br>LISTA</div>
+  <div class="nav-right">
+    <div class="nav-sync">
       <div class="sync-dot" id="sync-dot"></div>
       <span id="sync-label">carregando…</span>
     </div>
@@ -177,44 +225,73 @@ footer{text-align:center;padding:24px;font-family:var(--mono);font-size:11px;col
       Configurações
     </button>
   </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-eyebrow">São Paulo · lista pessoal</p>
+  <h1>MEU<br><em>APARTA-<br>MENTO</em></h1>
+  <p class="hero-sub">Lista completa para morar sozinha — tudo salvo na nuvem, preços atualizados por IA.</p>
+  <div class="hero-actions">
+    <button class="update-btn" id="update-btn" onclick="updatePrices()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="update-icon">
+        <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      Atualizar preços
+    </button>
+  </div>
   <p class="last-updated" id="last-updated"></p>
 </div>
 
+<!-- STATUS -->
 <div class="status-banner">
   <div class="status-msg" id="status-msg"></div>
 </div>
 
-<div class="metrics">
-  <div class="metric"><div class="metric-label">Total selecionado</div><div class="metric-val" id="m-total"><span>R$</span> 0</div></div>
-  <div class="metric"><div class="metric-label">Itens ativos</div><div class="metric-val" id="m-count">0 <span>itens</span></div></div>
-  <div class="metric"><div class="metric-label">Atacadão</div><div class="metric-val" id="m-atac"><span>R$</span> 0</div></div>
-  <div class="metric"><div class="metric-label">Feira livre</div><div class="metric-val" id="m-feira"><span>R$</span> 0</div></div>
+<!-- METRICS -->
+<div class="metrics-section">
+  <div class="metrics-inner">
+    <div class="metric"><div class="metric-label">Total selecionado</div><div class="metric-val" id="m-total">0 <small>R$</small></div></div>
+    <div class="metric"><div class="metric-label">Itens ativos</div><div class="metric-val" id="m-count">0 <small>itens</small></div></div>
+    <div class="metric"><div class="metric-label">Atacadão</div><div class="metric-val" id="m-atac">0 <small>R$</small></div></div>
+    <div class="metric"><div class="metric-label">Feira livre</div><div class="metric-val" id="m-feira">0 <small>R$</small></div></div>
+  </div>
 </div>
 
-<div class="main" id="lists"></div>
+<!-- LISTS -->
+<div id="sections-container"></div>
 
-<div class="main" style="padding-top:0">
-  <div class="breakdown">
-    <div class="breakdown-title">Resumo por categoria</div>
-    <div id="breakdown-rows"></div>
-    <div class="breakdown-total">
-      <span class="breakdown-total-label">Total estimado do mês</span>
+<!-- BREAKDOWN -->
+<div class="breakdown-section">
+  <div class="breakdown-inner">
+    <div class="breakdown-title">RESUMO<br>DO MÊS</div>
+    <div class="breakdown-grid" id="breakdown-grid"></div>
+    <div class="breakdown-total-row">
+      <span class="breakdown-total-label">Total estimado</span>
       <span class="breakdown-total-val" id="breakdown-total">R$ 0</span>
     </div>
+    <div class="tip-box" id="tip-box"></div>
   </div>
-  <div class="tip-box" id="tip-box"></div>
 </div>
 
-<footer>Preços estimados para São Paulo · dados salvos na nuvem · atualiza via IA semanalmente</footer>
+<!-- FOOTER TICKER -->
+<div class="footer-ticker">
+  <div class="ticker">
+    <span>Salvo na nuvem</span><span>Preços atualizados por IA</span><span>São Paulo 2026</span><span>Feira · Atacadão · Supermercado</span>
+    <span>Salvo na nuvem</span><span>Preços atualizados por IA</span><span>São Paulo 2026</span><span>Feira · Atacadão · Supermercado</span>
+  </div>
+</div>
+
+<footer>MINHA LISTA SP · DADOS SALVOS NA NUVEM · PREÇOS ESTIMADOS PARA SÃO PAULO</footer>
 
 <!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeSettings()">
   <div class="modal">
-    <div class="modal-title">⚙️ Configurações de API</div>
-    <div class="modal-sub">Configure a chave de IA para atualizar os preços automaticamente com base na internet.</div>
+    <div class="modal-title">CONFIGURAÇÕES</div>
+    <div class="modal-sub">Configure a chave de IA para atualizar os preços automaticamente.</div>
     <div class="api-status-row">
       <div class="api-dot" id="api-dot"></div>
-      <span id="api-status-text">Verificando configuração…</span>
+      <span id="api-status-text">Verificando…</span>
     </div>
     <label class="field-label">Provedor de IA</label>
     <select class="field-select" id="cfg-provider" onchange="updateProviderHint()">
@@ -229,308 +306,263 @@ footer{text-align:center;padding:24px;font-family:var(--mono);font-size:11px;col
     <div class="modal-status" id="modal-status"></div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeSettings()">Cancelar</button>
-      <button class="modal-save" onclick="saveSettings()">Salvar configuração</button>
+      <button class="modal-save" onclick="saveSettings()">Salvar</button>
     </div>
   </div>
 </div>
 
 <script>
-const SUPABASE_URL = 'https://rmxywzsfkeeztwfzdqva.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_-xoL5wLU8oqfGn-iC9StUQ_M7xXz0Jk';
-const TABLE = 'lista_mercado';
-const ROW_ID = 'minha_lista';
+const SUPABASE_URL='https://rmxywzsfkeeztwfzdqva.supabase.co';
+const SUPABASE_KEY='sb_publishable_-xoL5wLU8oqfGn-iC9StUQ_M7xXz0Jk';
+const TABLE='lista_mercado';
+const ROW_ID='minha_lista';
 
-// API config (loaded from Supabase)
-let apiConfig = { provider: 'openrouter', key: '' };
+let apiConfig={provider:'openrouter',key:''};
 
-const PROVIDERS = {
-  openrouter: {
-    name: 'OpenRouter',
-    url: 'https://openrouter.ai/api/v1/chat/completions',
-    model: 'meta-llama/llama-3.3-70b-instruct:free',
-    hint: 'Crie conta gratuita em <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> → Keys → Create Key. Chave começa com <strong>sk-or-...</strong>',
-    buildBody: (prompt) => JSON.stringify({ model: 'meta-llama/llama-3.3-70b-instruct:free', messages: [{ role: 'user', content: prompt }], max_tokens: 2000, temperature: 0.1 }),
-    getHeaders: (key) => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}`, 'HTTP-Referer': 'https://iridescent-sundae-ac775b.netlify.app' }),
-    parseResponse: (data) => data.choices?.[0]?.message?.content
-  },
-  groq: {
-    name: 'Groq',
-    url: 'https://api.groq.com/openai/v1/chat/completions',
-    model: 'llama-3.3-70b-versatile',
-    hint: 'Crie conta gratuita em <a href="https://console.groq.com" target="_blank">console.groq.com</a> → API Keys → Create Key. Chave começa com <strong>gsk_...</strong>',
-    buildBody: (prompt) => JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 2000, temperature: 0.1 }),
-    getHeaders: (key) => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }),
-    parseResponse: (data) => data.choices?.[0]?.message?.content
-  },
-  cohere: {
-    name: 'Cohere',
-    url: 'https://api.cohere.com/v2/chat',
-    model: 'command-r-plus',
-    hint: 'Crie conta gratuita em <a href="https://dashboard.cohere.com" target="_blank">dashboard.cohere.com</a> → API Keys. Chave é uma string longa de letras e números.',
-    buildBody: (prompt) => JSON.stringify({ model: 'command-r-plus', messages: [{ role: 'user', content: prompt }], max_tokens: 2000, temperature: 0.1 }),
-    getHeaders: (key) => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }),
-    parseResponse: (data) => data.message?.content?.[0]?.text
-  },
-  mistral: {
-    name: 'Mistral AI',
-    url: 'https://api.mistral.ai/v1/chat/completions',
-    model: 'mistral-small-latest',
-    hint: 'Crie conta gratuita em <a href="https://console.mistral.ai" target="_blank">console.mistral.ai</a> → API Keys → Create new key.',
-    buildBody: (prompt) => JSON.stringify({ model: 'mistral-small-latest', messages: [{ role: 'user', content: prompt }], max_tokens: 2000, temperature: 0.1 }),
-    getHeaders: (key) => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }),
-    parseResponse: (data) => data.choices?.[0]?.message?.content
-  }
+const PROVIDERS={
+  openrouter:{name:'OpenRouter',url:'https://openrouter.ai/api/v1/chat/completions',
+    hint:'Conta gratuita em <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> → Keys → Create Key. Chave: <strong>sk-or-...</strong>',
+    buildBody:(p)=>JSON.stringify({model:'meta-llama/llama-3.3-70b-instruct:free',messages:[{role:'user',content:p}],max_tokens:2000,temperature:0.1}),
+    getHeaders:(k)=>({'Content-Type':'application/json','Authorization':`Bearer ${k}`,'HTTP-Referer':'https://iridescent-sundae-ac775b.netlify.app'}),
+    parseResponse:(d)=>d.choices?.[0]?.message?.content},
+  groq:{name:'Groq',url:'https://api.groq.com/openai/v1/chat/completions',
+    hint:'Conta gratuita em <a href="https://console.groq.com" target="_blank">console.groq.com</a> → API Keys. Chave: <strong>gsk_...</strong>',
+    buildBody:(p)=>JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:p}],max_tokens:2000,temperature:0.1}),
+    getHeaders:(k)=>({'Content-Type':'application/json','Authorization':`Bearer ${k}`}),
+    parseResponse:(d)=>d.choices?.[0]?.message?.content},
+  cohere:{name:'Cohere',url:'https://api.cohere.com/v2/chat',
+    hint:'Conta gratuita em <a href="https://dashboard.cohere.com" target="_blank">dashboard.cohere.com</a> → API Keys.',
+    buildBody:(p)=>JSON.stringify({model:'command-r-plus',messages:[{role:'user',content:p}],max_tokens:2000}),
+    getHeaders:(k)=>({'Content-Type':'application/json','Authorization':`Bearer ${k}`}),
+    parseResponse:(d)=>d.message?.content?.[0]?.text},
+  mistral:{name:'Mistral AI',url:'https://api.mistral.ai/v1/chat/completions',
+    hint:'Conta gratuita em <a href="https://console.mistral.ai" target="_blank">console.mistral.ai</a> → API Keys.',
+    buildBody:(p)=>JSON.stringify({model:'mistral-small-latest',messages:[{role:'user',content:p}],max_tokens:2000,temperature:0.1}),
+    getHeaders:(k)=>({'Content-Type':'application/json','Authorization':`Bearer ${k}`}),
+    parseResponse:(d)=>d.choices?.[0]?.message?.content},
 };
 
-const DEFAULT_CATS = [
-  { id:'cafe', label:'Café da manhã', icon:'☕', color:'#FEF3C7', items:[
-    {name:'Leite (1L)', price:7, qty:4, where:'super', on:true},
-    {name:'Pão de forma', price:8, qty:2, where:'super', on:true},
-    {name:'Ovos (dúzia)', price:14, qty:2, where:'atac', on:true},
-    {name:'Manteiga', price:10, qty:1, where:'super', on:true},
-    {name:'Café em pó (500g)', price:15, qty:1, where:'atac', on:true},
+const WHERE={atac:'Atacadão',feira:'Feira',super:'Supermercado',farm:'Farmácia',loja:'Loja'};
+const WHERE_CLASS={atac:'where-atac',feira:'where-feira',super:'where-super',farm:'where-farm',loja:'where-loja'};
+const WHERE_OPTS=Object.entries(WHERE).map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+
+const DEFAULT_CATS=[
+  {id:'cafe',label:'Café da manhã',icon:'☕',color:'#FEF3C7',items:[
+    {name:'Leite (1L)',price:7,qty:4,where:'super',on:true},
+    {name:'Pão de forma',price:8,qty:2,where:'super',on:true},
+    {name:'Ovos (dúzia)',price:14,qty:2,where:'atac',on:true},
+    {name:'Manteiga',price:10,qty:1,where:'super',on:true},
+    {name:'Café em pó (500g)',price:15,qty:1,where:'atac',on:true},
   ]},
-  { id:'almoco', label:'Almoço', icon:'🍽️', color:'#E8F5EE', items:[
-    {name:'Arroz (5kg)', price:22, qty:1, where:'atac', on:true},
-    {name:'Feijão (1kg)', price:8, qty:1, where:'atac', on:true},
-    {name:'Frango coxa/sobrecoxa (1kg)', price:14, qty:2, where:'atac', on:true},
-    {name:'Legumes variados', price:35, qty:1, where:'feira', on:true},
-    {name:'Suco em pó / caixinha', price:20, qty:1, where:'super', on:true},
-    {name:'Óleo + temperos', price:18, qty:1, where:'atac', on:true},
-    {name:'Macarrão (500g)', price:5, qty:2, where:'atac', on:true},
-    {name:'Alface / tomate', price:15, qty:1, where:'feira', on:false},
-    {name:'Batata (1kg)', price:7, qty:1, where:'feira', on:false},
-    {name:'Carne moída (500g)', price:18, qty:1, where:'super', on:false},
+  {id:'almoco',label:'Almoço',icon:'🍽️',color:'#E8F5EE',items:[
+    {name:'Arroz (5kg)',price:22,qty:1,where:'atac',on:true},
+    {name:'Feijão (1kg)',price:8,qty:1,where:'atac',on:true},
+    {name:'Frango coxa/sobrecoxa (1kg)',price:14,qty:2,where:'atac',on:true},
+    {name:'Legumes variados',price:35,qty:1,where:'feira',on:true},
+    {name:'Suco em pó / caixinha',price:20,qty:1,where:'super',on:true},
+    {name:'Óleo + temperos',price:18,qty:1,where:'atac',on:true},
+    {name:'Macarrão (500g)',price:5,qty:2,where:'atac',on:true},
+    {name:'Alface / tomate',price:15,qty:1,where:'feira',on:false},
+    {name:'Batata (1kg)',price:7,qty:1,where:'feira',on:false},
+    {name:'Carne moída (500g)',price:18,qty:1,where:'super',on:false},
   ]},
-  { id:'lanche', label:'Lanche da faculdade', icon:'🎒', color:'#EFF6FF', items:[
-    {name:'Banana (cacho)', price:10, qty:2, where:'feira', on:true},
-    {name:'Biscoito / barra de cereal', price:20, qty:1, where:'super', on:true},
-    {name:'Bebida (suco, água sab.)', price:15, qty:1, where:'super', on:true},
-    {name:'Iogurte (pack 4)', price:14, qty:1, where:'super', on:false},
-    {name:'Queijo fatiado (200g)', price:12, qty:1, where:'super', on:false},
+  {id:'lanche',label:'Lanche da faculdade',icon:'🎒',color:'#EFF6FF',items:[
+    {name:'Banana (cacho)',price:10,qty:2,where:'feira',on:true},
+    {name:'Biscoito / barra de cereal',price:20,qty:1,where:'super',on:true},
+    {name:'Bebida (suco, água sab.)',price:15,qty:1,where:'super',on:true},
+    {name:'Iogurte (pack 4)',price:14,qty:1,where:'super',on:false},
+    {name:'Queijo fatiado (200g)',price:12,qty:1,where:'super',on:false},
   ]},
-  { id:'limpeza', label:'Limpeza & higiene doméstica', icon:'🧹', color:'#F0EFE9', items:[
-    {name:'Papel higiênico (12 rolos)', price:20, qty:1, where:'atac', on:true},
-    {name:'Detergente + esponja', price:10, qty:1, where:'atac', on:true},
-    {name:'Sabão em pó (1kg)', price:20, qty:1, where:'atac', on:true},
-    {name:'Desinfetante', price:12, qty:1, where:'atac', on:true},
-    {name:'Sabonete (3 un)', price:10, qty:1, where:'atac', on:true},
-    {name:'Shampoo', price:15, qty:1, where:'super', on:true},
-    {name:'Pasta de dente', price:8, qty:1, where:'super', on:true},
-    {name:'Saco de lixo', price:8, qty:1, where:'atac', on:true},
-    {name:'Amaciante', price:12, qty:1, where:'atac', on:false},
-    {name:'Água sanitária', price:5, qty:1, where:'atac', on:false},
-    {name:'Pano de chão', price:12, qty:1, where:'atac', on:false},
-    {name:'Vassoura + rodo', price:35, qty:1, where:'atac', on:false},
+  {id:'limpeza',label:'Limpeza & higiene',icon:'🧹',color:'#F0EFE9',items:[
+    {name:'Papel higiênico (12 rolos)',price:20,qty:1,where:'atac',on:true},
+    {name:'Detergente + esponja',price:10,qty:1,where:'atac',on:true},
+    {name:'Sabão em pó (1kg)',price:20,qty:1,where:'atac',on:true},
+    {name:'Desinfetante',price:12,qty:1,where:'atac',on:true},
+    {name:'Sabonete (3 un)',price:10,qty:1,where:'atac',on:true},
+    {name:'Shampoo',price:15,qty:1,where:'super',on:true},
+    {name:'Pasta de dente',price:8,qty:1,where:'super',on:true},
+    {name:'Saco de lixo',price:8,qty:1,where:'atac',on:true},
+    {name:'Amaciante',price:12,qty:1,where:'atac',on:false},
+    {name:'Água sanitária',price:5,qty:1,where:'atac',on:false},
+    {name:'Pano de chão',price:12,qty:1,where:'atac',on:false},
+    {name:'Vassoura + rodo',price:35,qty:1,where:'atac',on:false},
   ]},
-  { id:'beleza', label:'Beleza & cuidados pessoais', icon:'✨', color:'#FBE8F2', items:[
-    {name:'Condicionador', price:18, qty:1, where:'super', on:true},
-    {name:'Desodorante', price:12, qty:1, where:'super', on:true},
-    {name:'Hidratante corporal', price:25, qty:1, where:'super', on:true},
-    {name:'Protetor solar FPS50', price:35, qty:1, where:'super', on:true},
-    {name:'Absorvente', price:15, qty:2, where:'super', on:true},
-    {name:'Fio dental + enxaguante', price:14, qty:1, where:'super', on:true},
-    {name:'Creme facial', price:30, qty:1, where:'super', on:false},
-    {name:'Máscara capilar', price:22, qty:1, where:'super', on:false},
-    {name:'Removedor de maquiagem', price:20, qty:1, where:'super', on:false},
-    {name:'Esfoliante corporal', price:18, qty:1, where:'super', on:false},
-    {name:'Lâmina de depilação', price:15, qty:1, where:'super', on:false},
-    {name:'Algodão + cotonetes', price:8, qty:1, where:'super', on:false},
+  {id:'beleza',label:'Beleza & cuidados',icon:'✨',color:'#FBE8F2',items:[
+    {name:'Condicionador',price:18,qty:1,where:'super',on:true},
+    {name:'Desodorante',price:12,qty:1,where:'super',on:true},
+    {name:'Hidratante corporal',price:25,qty:1,where:'super',on:true},
+    {name:'Protetor solar FPS50',price:35,qty:1,where:'super',on:true},
+    {name:'Absorvente',price:15,qty:2,where:'super',on:true},
+    {name:'Fio dental + enxaguante',price:14,qty:1,where:'super',on:true},
+    {name:'Creme facial',price:30,qty:1,where:'super',on:false},
+    {name:'Máscara capilar',price:22,qty:1,where:'super',on:false},
+    {name:'Removedor de maquiagem',price:20,qty:1,where:'super',on:false},
+    {name:'Esfoliante corporal',price:18,qty:1,where:'super',on:false},
+    {name:'Lâmina de depilação',price:15,qty:1,where:'super',on:false},
+    {name:'Algodão + cotonetes',price:8,qty:1,where:'super',on:false},
   ]},
-  { id:'cama', label:'Cama, mesa & banho', icon:'🛏️', color:'#EEF0FB', items:[
-    {name:'Toalha de banho', price:45, qty:1, where:'loja', on:false},
-    {name:'Toalha de rosto', price:20, qty:1, where:'loja', on:false},
-    {name:'Jogo de lençol (solteiro)', price:70, qty:1, where:'loja', on:false},
-    {name:'Fronha avulsa', price:20, qty:2, where:'loja', on:false},
-    {name:'Travesseiro', price:50, qty:1, where:'loja', on:false},
-    {name:'Edredom / coberta', price:120, qty:1, where:'loja', on:false},
-    {name:'Tapete de banheiro', price:35, qty:1, where:'loja', on:false},
-    {name:'Tapete de quarto', price:60, qty:1, where:'loja', on:false},
-    {name:'Pano de prato (6 un)', price:25, qty:1, where:'atac', on:false},
-    {name:'Porta-shampoo box', price:30, qty:1, where:'super', on:false},
-    {name:'Jogo de toalha de mesa', price:40, qty:1, where:'loja', on:false},
-    {name:'Suporte papel higiênico', price:25, qty:1, where:'super', on:false},
+  {id:'cama',label:'Cama, mesa & banho',icon:'🛏️',color:'#EEF0FB',items:[
+    {name:'Toalha de banho',price:45,qty:1,where:'loja',on:false},
+    {name:'Toalha de rosto',price:20,qty:1,where:'loja',on:false},
+    {name:'Jogo de lençol (solteiro)',price:70,qty:1,where:'loja',on:false},
+    {name:'Fronha avulsa',price:20,qty:2,where:'loja',on:false},
+    {name:'Travesseiro',price:50,qty:1,where:'loja',on:false},
+    {name:'Edredom / coberta',price:120,qty:1,where:'loja',on:false},
+    {name:'Tapete de banheiro',price:35,qty:1,where:'loja',on:false},
+    {name:'Tapete de quarto',price:60,qty:1,where:'loja',on:false},
+    {name:'Pano de prato (6 un)',price:25,qty:1,where:'atac',on:false},
+    {name:'Porta-shampoo box',price:30,qty:1,where:'super',on:false},
+    {name:'Jogo de toalha de mesa',price:40,qty:1,where:'loja',on:false},
+    {name:'Suporte papel higiênico',price:25,qty:1,where:'super',on:false},
   ]},
-  { id:'eletro', label:'Eletrodomésticos & utilidades', icon:'🔌', color:'#FFF1E6', items:[
-    {name:'Ferro de passar roupa', price:120, qty:1, where:'loja', on:false},
-    {name:'Secador de cabelo', price:90, qty:1, where:'loja', on:false},
-    {name:'Chapinha / prancha', price:80, qty:1, where:'loja', on:false},
-    {name:'Liquidificador', price:100, qty:1, where:'loja', on:false},
-    {name:'Cafeteira elétrica', price:80, qty:1, where:'loja', on:false},
-    {name:'Micro-ondas', price:450, qty:1, where:'loja', on:false},
-    {name:'Ventilador de mesa', price:150, qty:1, where:'loja', on:false},
-    {name:'Fritadeira airfryer', price:280, qty:1, where:'loja', on:false},
-    {name:'Panela elétrica de arroz', price:90, qty:1, where:'loja', on:false},
-    {name:'Extensão elétrica (3m)', price:45, qty:1, where:'super', on:false},
-    {name:'Lâmpada LED (pack 3)', price:30, qty:1, where:'atac', on:false},
-    {name:'Pilhas (pack 8)', price:18, qty:1, where:'atac', on:false},
+  {id:'eletro',label:'Eletrodomésticos',icon:'🔌',color:'#FFF1E6',items:[
+    {name:'Ferro de passar roupa',price:120,qty:1,where:'loja',on:false},
+    {name:'Secador de cabelo',price:90,qty:1,where:'loja',on:false},
+    {name:'Chapinha / prancha',price:80,qty:1,where:'loja',on:false},
+    {name:'Liquidificador',price:100,qty:1,where:'loja',on:false},
+    {name:'Cafeteira elétrica',price:80,qty:1,where:'loja',on:false},
+    {name:'Micro-ondas',price:450,qty:1,where:'loja',on:false},
+    {name:'Ventilador de mesa',price:150,qty:1,where:'loja',on:false},
+    {name:'Fritadeira airfryer',price:280,qty:1,where:'loja',on:false},
+    {name:'Panela elétrica de arroz',price:90,qty:1,where:'loja',on:false},
+    {name:'Extensão elétrica (3m)',price:45,qty:1,where:'super',on:false},
+    {name:'Lâmpada LED (pack 3)',price:30,qty:1,where:'atac',on:false},
+    {name:'Pilhas (pack 8)',price:18,qty:1,where:'atac',on:false},
   ]},
-  { id:'cozinha', label:'Utensílios de cozinha', icon:'🍳', color:'#FEF9EC', items:[
-    {name:'Jogo de panelas (3 peças)', price:120, qty:1, where:'loja', on:false},
-    {name:'Frigideira antiaderente', price:60, qty:1, where:'loja', on:false},
-    {name:'Jogo de talheres (24 peças)', price:45, qty:1, where:'loja', on:false},
-    {name:'Pratos fundos + rasos (6 un)', price:40, qty:1, where:'loja', on:false},
-    {name:'Copos / canecas (6 un)', price:30, qty:1, where:'loja', on:false},
-    {name:'Tábua de corte', price:30, qty:1, where:'super', on:false},
-    {name:'Faca do chef', price:35, qty:1, where:'super', on:false},
-    {name:'Escorredor de macarrão', price:25, qty:1, where:'super', on:false},
-    {name:'Lixeira de pia', price:20, qty:1, where:'super', on:false},
-    {name:'Pote hermético (kit)', price:35, qty:1, where:'super', on:false},
-    {name:'Filme plástico + papel alumínio', price:15, qty:1, where:'atac', on:true},
+  {id:'cozinha',label:'Utensílios de cozinha',icon:'🍳',color:'#FEF9EC',items:[
+    {name:'Jogo de panelas (3 peças)',price:120,qty:1,where:'loja',on:false},
+    {name:'Frigideira antiaderente',price:60,qty:1,where:'loja',on:false},
+    {name:'Jogo de talheres (24 peças)',price:45,qty:1,where:'loja',on:false},
+    {name:'Pratos fundos + rasos (6 un)',price:40,qty:1,where:'loja',on:false},
+    {name:'Copos / canecas (6 un)',price:30,qty:1,where:'loja',on:false},
+    {name:'Tábua de corte',price:30,qty:1,where:'super',on:false},
+    {name:'Faca do chef',price:35,qty:1,where:'super',on:false},
+    {name:'Escorredor de macarrão',price:25,qty:1,where:'super',on:false},
+    {name:'Lixeira de pia',price:20,qty:1,where:'super',on:false},
+    {name:'Pote hermético (kit)',price:35,qty:1,where:'super',on:false},
+    {name:'Filme plástico + papel alumínio',price:15,qty:1,where:'atac',on:true},
   ]},
-  { id:'farmacia', label:'Farmácia & saúde', icon:'💊', color:'#F0FFF4', items:[
-    {name:'Analgésico (dipirona/ibuprofeno)', price:18, qty:1, where:'farm', on:true},
-    {name:'Band-aid / curativo', price:12, qty:1, where:'farm', on:true},
-    {name:'Álcool gel 70%', price:10, qty:1, where:'atac', on:true},
-    {name:'Vitamina C / multivitamínico', price:35, qty:1, where:'farm', on:false},
-    {name:'Antiácido (sal de fruta)', price:12, qty:1, where:'farm', on:false},
-    {name:'Pomada cicatrizante', price:15, qty:1, where:'farm', on:false},
-    {name:'Termômetro', price:40, qty:1, where:'farm', on:false},
-    {name:'Proteção menstrual (coletor/calça)', price:60, qty:1, where:'farm', on:false},
-    {name:'Colágeno / suplemento', price:55, qty:1, where:'farm', on:false},
+  {id:'farmacia',label:'Farmácia & saúde',icon:'💊',color:'#F0FFF4',items:[
+    {name:'Analgésico (dipirona/ibuprofeno)',price:18,qty:1,where:'farm',on:true},
+    {name:'Band-aid / curativo',price:12,qty:1,where:'farm',on:true},
+    {name:'Álcool gel 70%',price:10,qty:1,where:'atac',on:true},
+    {name:'Vitamina C / multivitamínico',price:35,qty:1,where:'farm',on:false},
+    {name:'Antiácido (sal de fruta)',price:12,qty:1,where:'farm',on:false},
+    {name:'Pomada cicatrizante',price:15,qty:1,where:'farm',on:false},
+    {name:'Termômetro',price:40,qty:1,where:'farm',on:false},
+    {name:'Proteção menstrual (coletor/calça)',price:60,qty:1,where:'farm',on:false},
+    {name:'Colágeno / suplemento',price:55,qty:1,where:'farm',on:false},
   ]},
-  { id:'papelaria', label:'Papelaria & escritório', icon:'📓', color:'#FAEEDA', items:[
-    {name:'Caneta esferográfica (pack 4)', price:8, qty:1, where:'super', on:true},
-    {name:'Caderno universitário', price:25, qty:1, where:'super', on:true},
-    {name:'Post-it / anotações', price:12, qty:1, where:'super', on:false},
-    {name:'Grampeador + grampos', price:30, qty:1, where:'super', on:false},
-    {name:'Marcador de texto', price:8, qty:1, where:'super', on:false},
-    {name:'Tesoura', price:12, qty:1, where:'super', on:false},
-    {name:'Fita adesiva + durex', price:10, qty:1, where:'super', on:false},
-    {name:'Pasta / fichário', price:20, qty:1, where:'super', on:false},
+  {id:'papelaria',label:'Papelaria & escritório',icon:'📓',color:'#FAEEDA',items:[
+    {name:'Caneta esferográfica (pack 4)',price:8,qty:1,where:'super',on:true},
+    {name:'Caderno universitário',price:25,qty:1,where:'super',on:true},
+    {name:'Post-it / anotações',price:12,qty:1,where:'super',on:false},
+    {name:'Grampeador + grampos',price:30,qty:1,where:'super',on:false},
+    {name:'Marcador de texto',price:8,qty:1,where:'super',on:false},
+    {name:'Tesoura',price:12,qty:1,where:'super',on:false},
+    {name:'Fita adesiva + durex',price:10,qty:1,where:'super',on:false},
+    {name:'Pasta / fichário',price:20,qty:1,where:'super',on:false},
   ]},
-  { id:'casa', label:'Organização do apartamento', icon:'🏠', color:'#F2F2F0', items:[
-    {name:'Cabide (pack 10)', price:20, qty:1, where:'atac', on:false},
-    {name:'Organizador de gaveta', price:30, qty:1, where:'super', on:false},
-    {name:'Cesto de roupa suja', price:50, qty:1, where:'super', on:false},
-    {name:'Lixeira com pedal', price:45, qty:1, where:'super', on:false},
-    {name:'Balde de limpeza', price:20, qty:1, where:'atac', on:false},
-    {name:'Desentupidor', price:15, qty:1, where:'atac', on:false},
-    {name:'Vela / difusor de ambiente', price:35, qty:1, where:'super', on:false},
-    {name:'Caixas organizadoras', price:45, qty:2, where:'super', on:false},
-    {name:'Reparador multiuso (WD-40)', price:25, qty:1, where:'super', on:false},
-    {name:'Suporte de parede / prateleira', price:40, qty:1, where:'super', on:false},
+  {id:'casa',label:'Organização do apê',icon:'🏠',color:'#F2F2F0',items:[
+    {name:'Cabide (pack 10)',price:20,qty:1,where:'atac',on:false},
+    {name:'Organizador de gaveta',price:30,qty:1,where:'super',on:false},
+    {name:'Cesto de roupa suja',price:50,qty:1,where:'super',on:false},
+    {name:'Lixeira com pedal',price:45,qty:1,where:'super',on:false},
+    {name:'Balde de limpeza',price:20,qty:1,where:'atac',on:false},
+    {name:'Desentupidor',price:15,qty:1,where:'atac',on:false},
+    {name:'Vela / difusor de ambiente',price:35,qty:1,where:'super',on:false},
+    {name:'Caixas organizadoras',price:45,qty:2,where:'super',on:false},
+    {name:'Reparador multiuso (WD-40)',price:25,qty:1,where:'super',on:false},
+    {name:'Suporte de parede / prateleira',price:40,qty:1,where:'super',on:false},
   ]},
 ];
 
-const WHERE = {atac:'Atacadão', feira:'Feira', super:'Supermercado', farm:'Farmácia', loja:'Loja'};
-const WHERE_CLASS = {atac:'where-atac', feira:'where-feira', super:'where-super', farm:'where-farm', loja:'where-loja'};
-const WHERE_OPTS = Object.entries(WHERE).map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+let CATS=JSON.parse(JSON.stringify(DEFAULT_CATS));
+let collapsed={};
+let editingKey=null;
+let updatedItems=new Set();
+let saveTimer=null;
 
-let CATS = JSON.parse(JSON.stringify(DEFAULT_CATS));
-let collapsed = {};
-let editingKey = null;
-let updatedItems = new Set();
-let saveTimer = null;
-
-function setSyncState(state, label) {
-  const dot = document.getElementById('sync-dot');
-  const lbl = document.getElementById('sync-label');
-  dot.className = 'sync-dot' + (state ? ' ' + state : '');
-  lbl.textContent = label;
+function setSyncState(s,l){
+  document.getElementById('sync-dot').className='sync-dot'+(s?' '+s:'');
+  document.getElementById('sync-label').textContent=l;
 }
+function fmt(n){return 'R$ '+Math.round(n)}
+function itemTotal(i){return i.on?i.price*i.qty:0}
+function scheduleSave(){clearTimeout(saveTimer);setSyncState('saving','salvando…');saveTimer=setTimeout(saveToCloud,1200)}
 
-async function loadFromCloud() {
-  setSyncState('saving', 'carregando…');
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${ROW_ID}&select=dados,config,atualizado_em`, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-    });
-    if (!res.ok) throw new Error('load failed');
-    const rows = await res.json();
-    if (rows.length > 0) {
-      if (rows[0].dados) {
-        CATS = rows[0].dados;
-        const d = new Date(rows[0].atualizado_em);
-        document.getElementById('last-updated').textContent =
-          'Última atualização: ' + d.toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+async function loadFromCloud(){
+  setSyncState('saving','carregando…');
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${ROW_ID}&select=dados,config,atualizado_em`,
+      {headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}});
+    if(!res.ok)throw new Error();
+    const rows=await res.json();
+    if(rows.length>0){
+      if(rows[0].dados)CATS=rows[0].dados;
+      if(rows[0].config)apiConfig=rows[0].config;
+      if(rows[0].atualizado_em){
+        const d=new Date(rows[0].atualizado_em);
+        document.getElementById('last-updated').textContent='Atualizado: '+d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
       }
-      if (rows[0].config) apiConfig = rows[0].config;
     }
-    setSyncState('saved', 'sincronizado');
-  } catch(e) {
-    setSyncState('error', 'erro ao carregar');
-    console.error(e);
-  }
+    setSyncState('saved','sincronizado');
+  }catch(e){setSyncState('error','erro ao carregar')}
   render();
 }
 
-async function saveToCloud() {
-  setSyncState('saving', 'salvando…');
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify({ id: ROW_ID, dados: CATS, config: apiConfig, atualizado_em: new Date().toISOString() })
+async function saveToCloud(){
+  setSyncState('saving','salvando…');
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`,{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({id:ROW_ID,dados:CATS,config:apiConfig,atualizado_em:new Date().toISOString()})
     });
-    if (!res.ok) throw new Error('save failed');
-    setSyncState('saved', 'salvo na nuvem');
-  } catch(e) {
-    setSyncState('error', 'erro ao salvar');
-    console.error(e);
-  }
+    if(!res.ok)throw new Error();
+    setSyncState('saved','salvo na nuvem');
+  }catch(e){setSyncState('error','erro ao salvar')}
 }
 
-function scheduleSave() {
-  clearTimeout(saveTimer);
-  setSyncState('saving', 'salvando…');
-  saveTimer = setTimeout(saveToCloud, 1200);
+function startEdit(ci,ii){editingKey=ci+'-'+ii;render();const el=document.getElementById(`edit-name-${ci}-${ii}`);if(el){el.focus();el.select()}}
+function cancelEdit(){editingKey=null;render()}
+function saveEdit(ci,ii){
+  const name=(document.getElementById(`edit-name-${ci}-${ii}`).value||'').trim();
+  const price=parseFloat(document.getElementById(`edit-price-${ci}-${ii}`).value);
+  const where=document.getElementById(`edit-where-${ci}-${ii}`).value;
+  if(!name||isNaN(price)||price<=0)return;
+  CATS[ci].items[ii]={...CATS[ci].items[ii],name,price,where};
+  editingKey=null;render();scheduleSave();
 }
 
-function fmt(n){ return 'R$ ' + Math.round(n); }
-function itemTotal(item){ return item.on ? item.price * item.qty : 0; }
+function render(){
+  const container=document.getElementById('sections-container');
+  container.innerHTML='';
+  let grand=0,countOn=0,atacT=0,feiraT=0;
 
-function startEdit(ci, ii) {
-  editingKey = ci + '-' + ii;
-  render();
-  const el = document.getElementById('edit-name-' + ci + '-' + ii);
-  if(el) { el.focus(); el.select(); }
-}
-function cancelEdit() { editingKey = null; render(); }
-function saveEdit(ci, ii) {
-  const name = (document.getElementById(`edit-name-${ci}-${ii}`).value||'').trim();
-  const price = parseFloat(document.getElementById(`edit-price-${ci}-${ii}`).value);
-  const where = document.getElementById(`edit-where-${ci}-${ii}`).value;
-  if(!name || isNaN(price) || price <= 0) return;
-  CATS[ci].items[ii].name = name;
-  CATS[ci].items[ii].price = price;
-  CATS[ci].items[ii].where = where;
-  editingKey = null;
-  render();
-  scheduleSave();
-}
+  // Group cats into rows of 2 for grid layout
+  const section=document.createElement('div');
+  section.className='section';
+  const grid=document.createElement('div');
+  grid.className='cat-grid';
 
-function render() {
-  const container = document.getElementById('lists');
-  container.innerHTML = '';
-  let grand=0, countOn=0, atacT=0, feiraT=0;
-
-  CATS.forEach((cat, ci) => {
-    const isOpen = !collapsed[cat.id];
-    const block = document.createElement('div');
-    block.className = 'cat-block';
-
-    const onItems = cat.items.filter(i => i.on);
-    const catSum = cat.items.reduce((s,i) => s + itemTotal(i), 0);
-    grand += catSum; countOn += onItems.length;
-    cat.items.forEach(i => {
-      if(!i.on) return;
-      if(i.where==='atac') atacT += itemTotal(i);
-      if(i.where==='feira') feiraT += itemTotal(i);
+  CATS.forEach((cat,ci)=>{
+    const isOpen=!collapsed[cat.id];
+    const onItems=cat.items.filter(i=>i.on);
+    const catSum=cat.items.reduce((s,i)=>s+itemTotal(i),0);
+    grand+=catSum;countOn+=onItems.length;
+    cat.items.forEach(i=>{
+      if(!i.on)return;
+      if(i.where==='atac')atacT+=itemTotal(i);
+      if(i.where==='feira')feiraT+=itemTotal(i);
     });
 
-    const itemsHTML = cat.items.map((item, ii) => {
-      const key = `${ci}-${ii}`;
-      const isEditing = editingKey === key;
-      const subtotal = itemTotal(item);
-      const isUpdated = updatedItems.has(key);
-
-      const viewRow = `
+    const itemsHTML=cat.items.map((item,ii)=>{
+      const key=`${ci}-${ii}`;
+      const isEditing=editingKey===key;
+      const sub=itemTotal(item);
+      const upd=updatedItems.has(key);
+      return `
         <div class="item-row" style="${isEditing?'display:none':''}">
           <input type="checkbox" class="item-check" ${item.on?'checked':''} onchange="CATS[${ci}].items[${ii}].on=this.checked;render();scheduleSave()">
           <span class="item-name ${item.on?'':'off'}" onclick="CATS[${ci}].items[${ii}].on=!CATS[${ci}].items[${ii}].on;render();scheduleSave()">${item.name}</span>
@@ -540,204 +572,154 @@ function render() {
             <span class="qty-val">${item.qty}</span>
             <button class="qty-btn" onclick="CATS[${ci}].items[${ii}].qty=CATS[${ci}].items[${ii}].qty+1;render();scheduleSave()">+</button>
           </div>
-          <span class="item-price ${isUpdated?'updated':''}">${item.on?fmt(subtotal):'—'}</span>
-          <button class="edit-btn" onclick="startEdit(${ci},${ii})" title="Editar" aria-label="Editar item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <span class="item-price ${upd?'updated':''}">${item.on?fmt(sub):'—'}</span>
+          <button class="edit-btn" onclick="startEdit(${ci},${ii})" title="Editar" aria-label="Editar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
           <button class="del-btn" onclick="CATS[${ci}].items.splice(${ii},1);render();scheduleSave()" aria-label="Remover">×</button>
-        </div>`;
-
-      const editRow = `
+        </div>
         <div class="edit-row ${isEditing?'active':''}" id="edit-${key}">
-          <input type="text" id="edit-name-${key}" value="${item.name.replace(/"/g,'&quot;')}" placeholder="Nome do item">
+          <input type="text" id="edit-name-${key}" value="${item.name.replace(/"/g,'&quot;')}" placeholder="Nome">
           <input type="number" id="edit-price-${key}" value="${item.price}" min="0.5" step="0.5" placeholder="R$">
           <select id="edit-where-${key}">${WHERE_OPTS.replace(`value="${item.where}"`,`value="${item.where}" selected`)}</select>
           <button class="save-btn" onclick="saveEdit(${ci},${ii})">Salvar</button>
           <button class="cancel-btn" onclick="cancelEdit()">Cancelar</button>
         </div>`;
-
-      return viewRow + editRow;
     }).join('');
 
-    block.innerHTML = `
-      <div class="cat-header" onclick="collapsed['${cat.id}']=!collapsed['${cat.id}'];render()">
-        <div class="cat-header-left">
-          <div class="cat-icon" style="background:${cat.color}">${cat.icon}</div>
-          <span class="cat-name">${cat.label}</span>
-          <span class="cat-count">${onItems.length}/${cat.items.length}</span>
+    const card=document.createElement('div');
+    card.className='cat-card';
+    card.innerHTML=`
+      <div class="cat-card-header" onclick="collapsed['${cat.id}']=!collapsed['${cat.id}'];render()">
+        <div class="cat-card-left">
+          <div class="cat-icon-wrap" style="background:${cat.color}">${cat.icon}</div>
+          <div>
+            <div class="cat-card-name">${cat.label}</div>
+            <div class="cat-card-meta">${onItems.length} de ${cat.items.length} selecionados</div>
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="cat-subtotal">${catSum>0?fmt(catSum):'—'}</span>
-          <span class="cat-chevron ${isOpen?'open':''}">▾</span>
+        <div class="cat-card-right">
+          <span class="cat-card-total">${catSum>0?fmt(catSum):'—'}</span>
+          <span class="chevron ${isOpen?'open':''}">▾</span>
         </div>
       </div>
-      <div class="cat-body ${isOpen?'':'collapsed'}">
+      <div class="cat-card-body ${isOpen?'':'collapsed'}">
         ${itemsHTML}
         <div class="add-area"><div class="add-row">
           <input type="text" id="n-name-${ci}" placeholder="Novo item…" onkeydown="if(event.key==='Enter')addItem(${ci})">
           <input type="number" id="n-price-${ci}" placeholder="R$" min="0.5" step="0.5">
           <select id="n-where-${ci}">${WHERE_OPTS}</select>
-          <button class="add-btn-inline" onclick="addItem(${ci})">+ Adicionar</button>
+          <button class="add-btn-inline" onclick="addItem(${ci})">+ Add</button>
         </div></div>
       </div>`;
-
-    container.appendChild(block);
+    grid.appendChild(card);
   });
 
-  document.getElementById('m-total').innerHTML = `<span>R$</span> ${Math.round(grand)}`;
-  document.getElementById('m-count').innerHTML = `${countOn} <span>itens</span>`;
-  document.getElementById('m-atac').innerHTML = `<span>R$</span> ${Math.round(atacT)}`;
-  document.getElementById('m-feira').innerHTML = `<span>R$</span> ${Math.round(feiraT)}`;
+  section.appendChild(grid);
+  container.appendChild(section);
 
-  document.getElementById('breakdown-rows').innerHTML = CATS.map(cat => {
-    const t = cat.items.reduce((s,i)=>s+itemTotal(i),0);
-    if(!t) return '';
-    return `<div class="breakdown-row"><span>${cat.icon} ${cat.label}</span><span style="font-family:var(--mono)">${fmt(t)}</span></div>`;
+  // Metrics
+  document.getElementById('m-total').innerHTML=`${Math.round(grand)} <small>R$</small>`;
+  document.getElementById('m-count').innerHTML=`${countOn} <small>itens</small>`;
+  document.getElementById('m-atac').innerHTML=`${Math.round(atacT)} <small>R$</small>`;
+  document.getElementById('m-feira').innerHTML=`${Math.round(feiraT)} <small>R$</small>`;
+
+  // Breakdown grid
+  const bg=document.getElementById('breakdown-grid');
+  bg.innerHTML=CATS.map(cat=>{
+    const t=cat.items.reduce((s,i)=>s+itemTotal(i),0);
+    if(!t)return'';
+    return`<div class="breakdown-item"><div class="breakdown-item-icon">${cat.icon}</div><div class="breakdown-item-name">${cat.label}</div><div class="breakdown-item-val">${fmt(t)}</div></div>`;
   }).join('');
-  document.getElementById('breakdown-total').textContent = fmt(grand);
+  document.getElementById('breakdown-total').textContent=fmt(grand);
 
-  const tip = document.getElementById('tip-box');
-  const pct = grand>0?Math.round((atacT/grand)*100):0;
-  if(pct>=45){tip.textContent=`${pct}% do gasto pode ir ao Atacadão — ótima estratégia. Uma visita mensal resolve a despensa inteira.`;tip.className='tip-box show';}
+  const tip=document.getElementById('tip-box');
+  const pct=grand>0?Math.round((atacT/grand)*100):0;
+  if(pct>=45){tip.textContent=`${pct}% do gasto pode ir ao Atacadão — concentre em uma visita mensal.`;tip.className='tip-box show';}
   else if(grand>0){tip.textContent='Dica: mova itens de despensa e limpeza para o Atacadão e economize até 25%.';tip.className='tip-box show';}
   else{tip.className='tip-box';}
 }
 
-function addItem(ci) {
-  const name = (document.getElementById(`n-name-${ci}`).value||'').trim();
-  const price = parseFloat(document.getElementById(`n-price-${ci}`).value);
-  const where = document.getElementById(`n-where-${ci}`).value;
-  if(!name||!price||price<=0) return;
+function addItem(ci){
+  const name=(document.getElementById(`n-name-${ci}`).value||'').trim();
+  const price=parseFloat(document.getElementById(`n-price-${ci}`).value);
+  const where=document.getElementById(`n-where-${ci}`).value;
+  if(!name||!price||price<=0)return;
   CATS[ci].items.push({name,price,qty:1,where,on:true});
   document.getElementById(`n-name-${ci}`).value='';
   document.getElementById(`n-price-${ci}`).value='';
-  render();
-  scheduleSave();
+  render();scheduleSave();
 }
 
-function showStatus(msg, type) {
-  const el = document.getElementById('status-msg');
-  el.textContent=msg; el.className=`status-msg ${type}`;
-  if(type==='success') setTimeout(()=>{el.className='status-msg';},5000);
+function showStatus(msg,type){
+  const el=document.getElementById('status-msg');
+  el.textContent=msg;el.className=`status-msg ${type}`;
+  if(type==='success')setTimeout(()=>{el.className='status-msg';},5000);
 }
 
-// ── SETTINGS MODAL ──────────────────────────────────
-function openSettings() {
-  const overlay = document.getElementById('modal-overlay');
-  const dot = document.getElementById('api-dot');
-  const txt = document.getElementById('api-status-text');
-  document.getElementById('cfg-provider').value = apiConfig.provider || 'openrouter';
-  document.getElementById('cfg-key').value = apiConfig.key || '';
-  document.getElementById('modal-status').className = 'modal-status';
+// ── SETTINGS ──
+function openSettings(){
+  document.getElementById('cfg-provider').value=apiConfig.provider||'openrouter';
+  document.getElementById('cfg-key').value=apiConfig.key||'';
+  document.getElementById('modal-status').className='modal-status';
   updateProviderHint();
-  if (apiConfig.key) {
-    dot.className = 'api-dot configured';
-    txt.textContent = `Configurado: ${PROVIDERS[apiConfig.provider]?.name || apiConfig.provider}`;
-  } else {
-    dot.className = 'api-dot missing';
-    txt.textContent = 'Nenhuma chave configurada ainda';
-  }
-  overlay.classList.add('open');
+  const dot=document.getElementById('api-dot');
+  const txt=document.getElementById('api-status-text');
+  if(apiConfig.key){dot.className='api-dot configured';txt.textContent=`Configurado: ${PROVIDERS[apiConfig.provider]?.name||apiConfig.provider}`;}
+  else{dot.className='api-dot missing';txt.textContent='Nenhuma chave configurada';}
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeSettings(){document.getElementById('modal-overlay').classList.remove('open')}
+function updateProviderHint(){const p=document.getElementById('cfg-provider').value;document.getElementById('cfg-hint').innerHTML=PROVIDERS[p]?.hint||'';}
+async function saveSettings(){
+  const provider=document.getElementById('cfg-provider').value;
+  const key=document.getElementById('cfg-key').value.trim();
+  const statusEl=document.getElementById('modal-status');
+  if(!key){statusEl.textContent='Cole a chave antes de salvar.';statusEl.className='modal-status err';return;}
+  apiConfig={provider,key};
+  try{await saveToCloud();statusEl.textContent='Configuração salva!';statusEl.className='modal-status ok';setTimeout(closeSettings,1000);}
+  catch(e){statusEl.textContent='Erro ao salvar.';statusEl.className='modal-status err';}
 }
 
-function closeSettings() {
-  document.getElementById('modal-overlay').classList.remove('open');
-}
+// ── UPDATE PRICES ──
+async function updatePrices(){
+  if(!apiConfig.key){showStatus('Configure uma chave de API primeiro — clique em ⚙️ Configurações.','error');return;}
+  const provider=PROVIDERS[apiConfig.provider];
+  if(!provider){showStatus('Provedor inválido.','error');return;}
+  const btn=document.getElementById('update-btn');
+  const icon=document.getElementById('update-icon');
+  btn.disabled=true;icon.classList.add('spin');
+  showStatus(`Buscando preços com ${provider.name}…`,'info');
 
-function updateProviderHint() {
-  const p = document.getElementById('cfg-provider').value;
-  document.getElementById('cfg-hint').innerHTML = PROVIDERS[p]?.hint || '';
-}
+  const itemList=CATS.flatMap((cat,ci)=>cat.items.map((item,ii)=>`${ci}-${ii}: ${item.name}`)).join('\n');
+  const prompt=`Você é especialista em preços de varejo no Brasil. Estime os preços atuais (2026) destes itens em São Paulo, usando lojas como Atacadão, Carrefour, Magazine Luiza, Droga Raia, Casas Bahia. Para eletrodomésticos, use modelos de entrada. Retorne APENAS JSON válido sem markdown:\n{"prices":[{"id":"0-0","price":7.50}]}\n\nItens:\n${itemList}\n\nSomente o JSON.`;
 
-async function saveSettings() {
-  const provider = document.getElementById('cfg-provider').value;
-  const key = document.getElementById('cfg-key').value.trim();
-  const statusEl = document.getElementById('modal-status');
-  if (!key) {
-    statusEl.textContent = 'Cole a chave de API antes de salvar.';
-    statusEl.className = 'modal-status err';
-    return;
-  }
-  apiConfig = { provider, key };
-  try {
-    await saveToCloud();
-    statusEl.textContent = 'Configuração salva com sucesso!';
-    statusEl.className = 'modal-status ok';
-    setTimeout(closeSettings, 1200);
-  } catch(e) {
-    statusEl.textContent = 'Erro ao salvar. Tente novamente.';
-    statusEl.className = 'modal-status err';
-  }
-}
-
-// ── UPDATE PRICES ────────────────────────────────────
-async function updatePrices() {
-  if (!apiConfig.key) {
-    showStatus('Configure uma chave de API primeiro — clique em ⚙️ Configurações.', 'error');
-    return;
-  }
-  const provider = PROVIDERS[apiConfig.provider];
-  if (!provider) { showStatus('Provedor inválido. Abra as configurações.', 'error'); return; }
-
-  const btn = document.getElementById('update-btn');
-  const icon = document.getElementById('update-icon');
-  btn.disabled=true; icon.classList.add('spin');
-  showStatus(`Buscando preços com ${provider.name}… isso pode levar alguns segundos.`, 'info');
-
-  const itemList = CATS.flatMap((cat,ci)=>cat.items.map((item,ii)=>`${ci}-${ii}: ${item.name}`)).join('\n');
-  const prompt = `Você é um assistente especializado em preços de varejo no Brasil.
-Estime os preços atuais (2026) destes itens em São Paulo, com base no seu conhecimento.
-Use preços de lojas acessíveis: Atacadão, Carrefour, Americanas, Magazine Luiza, Droga Raia, Casas Bahia.
-Para eletrodomésticos, use modelos de entrada. Para beleza, use marcas de farmácia/supermercado.
-
-Retorne APENAS um JSON válido, sem explicação, sem markdown, sem texto antes ou depois:
-{"prices": [{"id": "0-0", "price": 7.50}, {"id": "0-1", "price": 8.00}]}
-
-Itens (id: nome):
-${itemList}
-
-Responda SOMENTE com o JSON.`;
-
-  try {
-    const response = await fetch(provider.url, {
-      method: 'POST',
-      headers: provider.getHeaders(apiConfig.key),
-      body: provider.buildBody(prompt)
-    });
-    if (!response.ok) {
-      const err = await response.json().catch(()=>({}));
-      throw new Error(err.error?.message || err.message || `HTTP ${response.status}`);
-    }
-    const data = await response.json();
-    const raw = provider.parseResponse(data);
-    if (!raw) throw new Error('Resposta vazia do provedor');
-
-    let clean = raw.trim().replace(/```json|```/g,'').trim();
-    const s=clean.indexOf('{'), e=clean.lastIndexOf('}');
-    if(s===-1||e===-1) throw new Error('JSON não encontrado na resposta');
-    const parsed = JSON.parse(clean.slice(s,e+1));
-    if(!parsed.prices||!Array.isArray(parsed.prices)) throw new Error('Formato inválido');
-
-    updatedItems=new Set();
-    let updated=0;
+  try{
+    const response=await fetch(provider.url,{method:'POST',headers:provider.getHeaders(apiConfig.key),body:provider.buildBody(prompt)});
+    if(!response.ok){const err=await response.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${response.status}`);}
+    const data=await response.json();
+    const raw=provider.parseResponse(data);
+    if(!raw)throw new Error('Resposta vazia');
+    let clean=raw.trim().replace(/```json|```/g,'').trim();
+    const s=clean.indexOf('{'),e=clean.lastIndexOf('}');
+    if(s===-1||e===-1)throw new Error('JSON não encontrado');
+    const parsed=JSON.parse(clean.slice(s,e+1));
+    if(!parsed.prices)throw new Error('Formato inválido');
+    updatedItems=new Set();let updated=0;
     parsed.prices.forEach(entry=>{
-      const [ci,ii]=entry.id.split('-').map(Number);
+      const[ci,ii]=entry.id.split('-').map(Number);
       const price=parseFloat(entry.price);
-      if(isNaN(price)||price<=0) return;
+      if(isNaN(price)||price<=0)return;
       if(CATS[ci]&&CATS[ci].items[ii]){CATS[ci].items[ii].price=price;updatedItems.add(entry.id);updated++;}
     });
     render();
     const now=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    document.getElementById('last-updated').textContent=`Preços atualizados em ${now} via ${provider.name}`;
-    showStatus(`${updated} preços atualizados com sucesso via ${provider.name}.`,'success');
+    document.getElementById('last-updated').textContent=`Atualizado: ${now} via ${provider.name}`;
+    showStatus(`${updated} preços atualizados via ${provider.name}.`,'success');
     scheduleSave();
     setTimeout(()=>{updatedItems=new Set();render();},4000);
-  } catch(err) {
-    console.error(err);
-    showStatus(`Erro ao atualizar preços: ${err.message}`,'error');
-  } finally {
-    btn.disabled=false; icon.classList.remove('spin');
-  }
+  }catch(err){showStatus(`Erro: ${err.message}`,'error');}
+  finally{btn.disabled=false;icon.classList.remove('spin');}
 }
 
 loadFromCloud();
