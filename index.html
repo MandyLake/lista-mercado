@@ -164,6 +164,32 @@ nav{max-width:1000px;margin:0 auto;padding:20px 24px;display:flex;align-items:ce
 .link-status.loading{color:var(--klein)}
 .link-icon-btn{width:20px;height:20px;border:none;background:transparent;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;opacity:0;transition:opacity .15s,color .1s;padding:0}
 .link-icon-btn:hover{color:var(--klein)}
+
+/* ── ADD ROW TABS ── */
+.add-tabs{display:flex;gap:0;border-bottom:1.5px solid var(--border2);margin-bottom:0}
+.add-tab{font-family:var(--sans);font-size:11px;font-weight:500;padding:8px 14px;border:none;background:transparent;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:color .15s,border-color .15s}
+.add-tab.active{color:var(--klein);border-bottom-color:var(--klein)}
+.add-tab-panel{display:none;padding:10px 16px}
+.add-tab-panel.active{display:block}
+.link-import-row{display:flex;gap:6px;align-items:center}
+.link-import-input{flex:1;font-family:var(--mono);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:#fff;color:var(--ink);outline:none;transition:border-color .15s}
+.link-import-input:focus{border-color:var(--klein)}
+.link-import-input::placeholder{color:var(--ink3)}
+.link-import-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--r-sm);background:var(--klein);color:#fff;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;transition:background .1s;flex-shrink:0}
+.link-import-btn:hover{background:#3300d4}
+.link-import-btn:disabled{opacity:.5;cursor:not-allowed}
+.link-import-btn svg{width:12px;height:12px}
+.link-import-status{font-family:var(--mono);font-size:11px;margin-top:6px}
+.link-import-status.loading{color:var(--klein)}
+.link-import-status.ok{color:var(--green)}
+.link-import-status.err{color:var(--tangerine)}
+.link-preview{display:none;gap:10px;align-items:center;margin-top:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--r-sm);border:1px solid var(--border2)}
+.link-preview.show{display:flex}
+.link-preview-name{flex:1;font-size:13px;color:var(--ink);font-weight:500;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-preview-price{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--green);flex-shrink:0}
+.link-preview-where{flex-shrink:0}
+.link-preview-add{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 12px;border:none;border-radius:var(--r-sm);background:var(--fuchsia);color:#fff;cursor:pointer;flex-shrink:0;transition:background .1s}
+.link-preview-add:hover{background:#d42d8f}
 .item-row:hover .link-icon-btn{opacity:1}
 
 /* ── ITEM ROW ── */
@@ -605,6 +631,150 @@ function fmt(n){return 'R$ '+Math.round(n)}
 function itemTotal(i){return i.on?i.price*i.qty:0}
 function scheduleSave(){clearTimeout(saveTimer);setSyncState('saving','salvando…');saveTimer=setTimeout(saveToCloud,1200)}
 
+// ── ADD TAB SWITCHER ──
+function switchAddTab(ci, tab, btn) {
+  const manualPanel = document.getElementById(`tab-manual-${ci}`);
+  const linkPanel = document.getElementById(`tab-link-${ci}`);
+  const tabs = btn.closest('.add-tabs').querySelectorAll('.add-tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  if (tab === 'manual') {
+    manualPanel.classList.add('active');
+    linkPanel.classList.remove('active');
+  } else {
+    linkPanel.classList.add('active');
+    manualPanel.classList.remove('active');
+    setTimeout(() => document.getElementById(`link-import-url-${ci}`)?.focus(), 50);
+  }
+}
+
+// ── IMPORT FROM LINK ──
+let importCache = {}; // store fetched data per ci
+
+async function importFromLink(ci) {
+  const urlEl = document.getElementById(`link-import-url-${ci}`);
+  const statusEl = document.getElementById(`link-import-status-${ci}`);
+  const previewEl = document.getElementById(`link-preview-${ci}`);
+  const btn = document.getElementById(`link-import-btn-${ci}`);
+  const url = (urlEl?.value || '').trim();
+
+  if (!url) {
+    statusEl.textContent = 'Cole um link válido.';
+    statusEl.className = 'link-import-status err';
+    return;
+  }
+
+  btn.disabled = true;
+  previewEl.classList.remove('show');
+  statusEl.textContent = 'Buscando nome e preço do produto…';
+  statusEl.className = 'link-import-status loading';
+
+  const prompt = `Acesse este link de produto e extraia o nome e preço atual em reais (R$).
+URL: ${url}
+
+Responda APENAS com JSON: {"name": "Nome do Produto", "price": 49.90}
+Se não conseguir extrair, responda: {"name": null, "price": null}
+Somente o JSON, sem explicação.`;
+
+  const extractJSON = (raw) => {
+    let clean = (raw || '').trim().replace(/\`\`\`json|\`\`\`/g, '').trim();
+    const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+    if (s === -1 || e === -1) throw new Error('JSON não encontrado');
+    return JSON.parse(clean.slice(s, e + 1));
+  };
+
+  const tryAnthropic = async () => {
+    const messages = [{ role: 'user', content: prompt }];
+    for (let i = 0; i < 5; i++) {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6', max_tokens: 400,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages
+        })
+      });
+      if (!res.ok) throw new Error(`Anthropic HTTP ${res.status}`);
+      const data = await res.json();
+      const texts = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
+      for (const txt of texts) {
+        try { return extractJSON(txt); } catch(e) {}
+      }
+      if (data.stop_reason === 'tool_use') {
+        const toolUses = (data.content || []).filter(b => b.type === 'tool_use');
+        messages.push({ role: 'assistant', content: data.content });
+        messages.push({ role: 'user', content: toolUses.map(t => ({
+          type: 'tool_result', tool_use_id: t.id,
+          content: `Searched: ${JSON.stringify(t.input)}`
+        }))});
+        continue;
+      }
+      if (texts.length) return extractJSON(texts[texts.length - 1]);
+      throw new Error('no response');
+    }
+    throw new Error('max iterations');
+  };
+
+  const tryProxy = async () => {
+    const res = await fetch('/.netlify/functions/ai-proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `Proxy ${res.status}`);
+    return extractJSON(data.text);
+  };
+
+  try {
+    let parsed;
+    try { parsed = await tryAnthropic(); }
+    catch(e) { parsed = await tryProxy(); }
+
+    if (!parsed?.name || !parsed?.price) {
+      statusEl.textContent = 'Não consegui extrair os dados. Tente outro link ou preencha manualmente.';
+      statusEl.className = 'link-import-status err';
+      return;
+    }
+
+    // Store for confirmImport
+    importCache[ci] = { name: parsed.name, price: parseFloat(parsed.price), url };
+
+    // Show preview
+    document.getElementById(`link-preview-name-${ci}`).textContent = parsed.name;
+    document.getElementById(`link-preview-price-${ci}`).textContent = `R$ ${parsed.price}`;
+    previewEl.classList.add('show');
+    statusEl.textContent = '✓ Produto encontrado! Confirme abaixo.';
+    statusEl.className = 'link-import-status ok';
+
+  } catch(err) {
+    statusEl.textContent = `Erro: ${err.message}`;
+    statusEl.className = 'link-import-status err';
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function confirmImport(ci) {
+  const data = importCache[ci];
+  if (!data) return;
+  const where = document.getElementById(`link-preview-where-${ci}`)?.value || 'loja';
+  CATS[ci].items.push({ name: data.name, price: data.price, qty: 1, where, on: true, url: data.url });
+  render();
+  scheduleSave();
+  if (openDrawerIdx === ci) renderDrawerContent(ci);
+  // Reset
+  delete importCache[ci];
+  const urlEl = document.getElementById(`link-import-url-${ci}`);
+  if (urlEl) urlEl.value = '';
+  const statusEl = document.getElementById(`link-import-status-${ci}`);
+  if (statusEl) { statusEl.textContent = ''; statusEl.className = 'link-import-status'; }
+  const previewEl = document.getElementById(`link-preview-${ci}`);
+  if (previewEl) previewEl.classList.remove('show');
+}
+
 async function loadFromCloud(){
   setSyncState('saving','carregando…');
   try{
@@ -837,11 +1007,36 @@ function renderDrawerContent(ci){
       </div>`;
   }).join('');
 
-  document.getElementById('drawer-add').innerHTML=`<div class="add-row">
-    <input type="text" id="n-name-${ci}" placeholder="Novo item…" onkeydown="if(event.key==='Enter')addItem(${ci})">
-    <input type="number" id="n-price-${ci}" placeholder="R$" min="0.5" step="0.5">
-    <select id="n-where-${ci}">${WHERE_OPTS}</select>
-    <button class="add-btn-inline" onclick="addItem(${ci})">+ Add</button>
+  document.getElementById('drawer-add').innerHTML=`
+  <div class="add-tabs">
+    <button class="add-tab active" onclick="switchAddTab(${ci},'manual',this)">✏️ Manual</button>
+    <button class="add-tab" onclick="switchAddTab(${ci},'link',this)">🔗 Importar por link</button>
+  </div>
+  <div class="add-tab-panel active" id="tab-manual-${ci}">
+    <div class="add-row">
+      <input type="text" id="n-name-${ci}" placeholder="Nome do item…" onkeydown="if(event.key==='Enter')addItem(${ci})">
+      <input type="number" id="n-price-${ci}" placeholder="R$" min="0.5" step="0.5">
+      <select id="n-where-${ci}">${WHERE_OPTS}</select>
+      <button class="add-btn-inline" onclick="addItem(${ci})">+ Add</button>
+    </div>
+  </div>
+  <div class="add-tab-panel" id="tab-link-${ci}">
+    <div class="link-import-row">
+      <input type="url" class="link-import-input" id="link-import-url-${ci}"
+        placeholder="Cole o link do produto (TokStok, Americanas, Magazine Luiza…)"
+        onkeydown="if(event.key==='Enter')importFromLink(${ci})">
+      <button class="link-import-btn" id="link-import-btn-${ci}" onclick="importFromLink(${ci})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Buscar
+      </button>
+    </div>
+    <div class="link-import-status" id="link-import-status-${ci}"></div>
+    <div class="link-preview" id="link-preview-${ci}">
+      <span class="link-preview-name" id="link-preview-name-${ci}"></span>
+      <span class="link-preview-price" id="link-preview-price-${ci}"></span>
+      <select class="link-preview-where" id="link-preview-where-${ci}">${WHERE_OPTS}</select>
+      <button class="link-preview-add" onclick="confirmImport(${ci})">+ Adicionar</button>
+    </div>
   </div>`;
 }
 
