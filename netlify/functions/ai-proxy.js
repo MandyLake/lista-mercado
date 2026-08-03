@@ -4,8 +4,21 @@ exports.handler = async (event) => {
   }
 
   const OPENROUTER_KEY = process.env.OPENROUTER_KEY;
+  
+  // Debug: log what env vars are available (sem expor valores)
+  const envKeys = Object.keys(process.env).filter(k => !k.includes('SECRET') && !k.includes('TOKEN') && !k.includes('KEY'));
+  console.log('Available env keys (non-sensitive):', envKeys);
+  console.log('OPENROUTER_KEY present:', !!OPENROUTER_KEY);
+  console.log('OPENROUTER_KEY length:', OPENROUTER_KEY ? OPENROUTER_KEY.length : 0);
+
   if (!OPENROUTER_KEY) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'API key not configured on server' }) };
+    return { 
+      statusCode: 500, 
+      body: JSON.stringify({ 
+        error: 'API key not configured on server',
+        debug: { keyPresent: false, envCount: Object.keys(process.env).length }
+      }) 
+    };
   }
 
   let body;
@@ -17,19 +30,18 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing prompt' }) };
   }
 
-  // Lista de modelos gratuitos para tentar em sequência
   const FREE_MODELS = [
     'nvidia/llama-3.1-nemotron-nano-8b-v1:free',
     'google/gemma-3-27b-it:free',
     'google/gemma-3-12b-it:free',
     'mistralai/mistral-7b-instruct:free',
     'qwen/qwen3-8b:free',
-    'nousresearch/hermes-3-llama-3.1-405b:free',
+    'meta-llama/llama-3.2-3b-instruct:free',
     'openchat/openchat-7b:free',
-    'gryphe/mythomax-l2-13b:free',
   ];
 
   let lastError = '';
+  let lastStatus = 0;
 
   for (const model of FREE_MODELS) {
     try {
@@ -50,15 +62,21 @@ exports.handler = async (event) => {
       });
 
       const data = await response.json();
+      lastStatus = response.status;
 
-      // Se modelo não disponível, tenta próximo
       if (!response.ok) {
-        lastError = data.error?.message || `HTTP ${response.status}`;
-        if (response.status === 402 || response.status === 400 ||
-            (lastError && lastError.includes('unavailable for free'))) {
-          continue; // tenta próximo modelo
+        lastError = data.error?.message || JSON.stringify(data.error) || `HTTP ${response.status}`;
+        console.log(`Model ${model} failed:`, lastError);
+        // Skip to next model if unavailable/quota
+        if (lastError.includes('unavailable') || lastError.includes('free') || 
+            response.status === 402 || response.status === 429) {
+          continue;
         }
-        return { statusCode: response.status, body: JSON.stringify({ error: lastError }) };
+        // Auth error — return immediately, no point trying other models
+        if (response.status === 401 || lastError.includes('Authentication') || lastError.includes('auth')) {
+          return { statusCode: 401, body: JSON.stringify({ error: `Auth error: ${lastError}`, keyLength: OPENROUTER_KEY.length }) };
+        }
+        continue;
       }
 
       const text = data.choices?.[0]?.message?.content || '';
@@ -72,14 +90,13 @@ exports.handler = async (event) => {
 
     } catch(e) {
       lastError = e.message;
+      console.log(`Model ${model} exception:`, e.message);
       continue;
     }
   }
 
   return {
     statusCode: 503,
-    body: JSON.stringify({ error: `Todos os modelos gratuitos falharam. Último erro: ${lastError}` })
+    body: JSON.stringify({ error: `Todos os modelos falharam. Último: ${lastError} (HTTP ${lastStatus})` })
   };
 };
-
-// v2 - force redeploy to pick up env vars
