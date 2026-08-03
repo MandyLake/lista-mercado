@@ -26,7 +26,7 @@ exports.handler = async (event) => {
         'HTTP-Referer': 'https://iridescent-sundae-ac775b.netlify.app'
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-3.3-70b-instruct:free',
+        model: 'openrouter/free',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 2000,
         temperature: 0.1
