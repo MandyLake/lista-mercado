@@ -81,3 +81,5 @@ exports.handler = async (event) => {
     body: JSON.stringify({ error: `Todos os modelos gratuitos falharam. Último erro: ${lastError}` })
   };
 };
+
+// v2 - force redeploy to pick up env vars
