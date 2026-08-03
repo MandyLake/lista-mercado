@@ -683,28 +683,58 @@ async function saveSettings(){
 
 // ── UPDATE PRICES ──
 async function updatePrices(){
-  if(!apiConfig.key){showStatus('Configure uma chave de API primeiro — clique em ⚙️ Configurações.','error');return;}
-  const provider=PROVIDERS[apiConfig.provider];
-  if(!provider){showStatus('Provedor inválido.','error');return;}
   const btn=document.getElementById('update-btn');
   const icon=document.getElementById('update-icon');
   btn.disabled=true;icon.classList.add('spin');
-  showStatus(`Buscando preços com ${provider.name}…`,'info');
 
   const itemList=CATS.flatMap((cat,ci)=>cat.items.map((item,ii)=>`${ci}-${ii}: ${item.name}`)).join('\n');
-  const prompt=`Você é especialista em preços de varejo no Brasil. Estime os preços atuais (2026) destes itens em São Paulo, usando lojas como Atacadão, Carrefour, Magazine Luiza, Droga Raia, Casas Bahia. Para eletrodomésticos, use modelos de entrada. Retorne APENAS JSON válido sem markdown:\n{"prices":[{"id":"0-0","price":7.50}]}\n\nItens:\n${itemList}\n\nSomente o JSON.`;
+  const prompt=`Você é especialista em preços de varejo no Brasil. Pesquise e estime os preços atuais (2026) destes itens em São Paulo, usando lojas como Atacadão, Carrefour, Magazine Luiza, Droga Raia, Casas Bahia. Para eletrodomésticos, use modelos de entrada. Retorne APENAS JSON válido sem markdown, sem explicação:\n{"prices":[{"id":"0-0","price":7.50}]}\n\nItens:\n${itemList}\n\nSomente o JSON.`;
+
+  // Tenta Anthropic API (funciona no claude.ai)
+  const tryAnthropic = async () => {
+    showStatus('Buscando preços com IA + busca na web…','info');
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1500,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!res.ok) throw new Error(`Anthropic HTTP ${res.status}`);
+    const data=await res.json();
+    const textBlock=data.content?.find(b=>b.type==='text');
+    if(!textBlock?.text) throw new Error('Sem resposta');
+    return {raw: textBlock.text, source: 'Anthropic + busca web'};
+  };
+
+  // Fallback: provedor configurado pelo usuário
+  const tryConfigured = async () => {
+    if(!apiConfig.key) throw new Error('sem chave configurada');
+    const provider=PROVIDERS[apiConfig.provider];
+    if(!provider) throw new Error('provedor inválido');
+    showStatus(`Buscando preços com ${provider.name}…`,'info');
+    const res=await fetch(provider.url,{method:'POST',headers:provider.getHeaders(apiConfig.key),body:provider.buildBody(prompt)});
+    if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${res.status}`);}
+    const data=await res.json();
+    const raw=provider.parseResponse(data);
+    if(!raw) throw new Error('resposta vazia');
+    return {raw, source: provider.name};
+  };
 
   try{
-    const response=await fetch(provider.url,{method:'POST',headers:provider.getHeaders(apiConfig.key),body:provider.buildBody(prompt)});
-    if(!response.ok){const err=await response.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${response.status}`);}
-    const data=await response.json();
-    const raw=provider.parseResponse(data);
-    if(!raw)throw new Error('Resposta vazia');
-    let clean=raw.trim().replace(/```json|```/g,'').trim();
+    let result;
+    try { result = await tryAnthropic(); }
+    catch(e){ result = await tryConfigured(); }
+
+    let clean=result.raw.trim().replace(/```json|```/g,'').trim();
     const s=clean.indexOf('{'),e=clean.lastIndexOf('}');
-    if(s===-1||e===-1)throw new Error('JSON não encontrado');
+    if(s===-1||e===-1)throw new Error('JSON não encontrado na resposta');
     const parsed=JSON.parse(clean.slice(s,e+1));
     if(!parsed.prices)throw new Error('Formato inválido');
+
     updatedItems=new Set();let updated=0;
     parsed.prices.forEach(entry=>{
       const[ci,ii]=entry.id.split('-').map(Number);
@@ -714,11 +744,14 @@ async function updatePrices(){
     });
     render();
     const now=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    document.getElementById('last-updated').textContent=`Atualizado: ${now} via ${provider.name}`;
-    showStatus(`${updated} preços atualizados via ${provider.name}.`,'success');
+    document.getElementById('last-updated').textContent=`Atualizado: ${now} via ${result.source}`;
+    showStatus(`${updated} preços atualizados via ${result.source}.`,'success');
     scheduleSave();
     setTimeout(()=>{updatedItems=new Set();render();},4000);
-  }catch(err){showStatus(`Erro: ${err.message}`,'error');}
+  }catch(err){
+    showStatus(`Não foi possível atualizar. Configure uma chave em ⚙️ Configurações ou tente novamente.`,'error');
+    console.error(err);
+  }
   finally{btn.disabled=false;icon.classList.remove('spin');}
 }
 
